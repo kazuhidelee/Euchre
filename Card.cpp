@@ -154,7 +154,7 @@ bool Card::is_right_bower(Suit trump) const
 // EFFECTS Returns true if card is the Jack of the next suit
 bool Card::is_left_bower(Suit trump) const
 {
-  assert(false);
+  return (suit == Suit_next(trump) && rank == JACK);
 }
 
 // EFFECTS Returns true if the card is a trump card.  All cards of the trump
@@ -214,7 +214,14 @@ bool operator<(const Card &lhs, const Card &rhs)
 //   Does not consider trump.
 bool operator<=(const Card &lhs, const Card &rhs)
 {
-  assert(false);
+  if ((lhs < rhs) || (lhs == rhs))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // EFFECTS Returns true if lhs is higher value than rhs.
@@ -239,7 +246,14 @@ bool operator>(const Card &lhs, const Card &rhs)
 //   Does not consider trump.
 bool operator>=(const Card &lhs, const Card &rhs)
 {
-  assert(false);
+  if ((lhs > rhs) || (lhs == rhs))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // EFFECTS Returns true if lhs is same card as rhs.
@@ -259,13 +273,50 @@ bool operator!=(const Card &lhs, const Card &rhs)
 // EFFECTS returns the next suit, which is the suit of the same color
 Suit Suit_next(Suit suit)
 {
-  assert(false);
+  if (suit == DIAMONDS)
+  {
+    return HEARTS;
+  }
+  else if (suit == HEARTS)
+  {
+    return DIAMONDS;
+  }
+  else if (suit == SPADES)
+  {
+    return CLUBS;
+  }
+  else if (suit == CLUBS)
+  {
+    return SPADES;
+  }
 }
 
 // EFFECTS Returns true if a is lower value than b.  Uses trump to determine
 //  order, as described in the spec.
 bool Card_less(const Card &a, const Card &b, Suit trump)
 {
+  // 1. same card
+  // 2. diff card
+  // 1. same suit
+  // 1.b is JACK(trump or next)
+  // 2.b is NOT JACK(trump or next)
+  // 1. a rank < b rank
+  // 2. b rank > b rank
+  // 2. diff suit
+  // 1. b is trump suit
+  // 1. a is JACK(trump or next)
+  // 1. b is JACK
+  // 2. b is NOT JACK
+  // 2. a is NOY JACK(trump or next)
+  // 2. a is trump suit
+  // 1. b is JACK(trump or next)
+  // 1. a is JACK
+  // 2. b is NOT JACK
+  // 2. b is NOY JACK(trump or next)
+  // 3. both are NOT trump suit
+  // 1. a < b
+  // 2. b > a
+
   assert(false);
 }
 
