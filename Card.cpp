@@ -113,7 +113,7 @@ std::istream &operator>>(std::istream &is, Suit &suit)
 //   operator!=
 
 Card::Card()
-    : rank(TWO), suit(SPADES) {}
+    : rank(TWO), suit(SPADES) {} // just attribute intialization
 
 // EFFECTS Initializes Card to specified rank and suit
 Card::Card(Rank rank_in, Suit suit_in)
@@ -147,7 +147,8 @@ bool Card::is_face_or_ace() const
 // EFFECTS Returns true if card is the Jack of the trump suit
 bool Card::is_right_bower(Suit trump) const
 {
-  return suit == trump; // idk check later
+  return (suit == trump && rank == JACK);
+  // suit has to be same as trump and rank has to be jack
 }
 
 // EFFECTS Returns true if card is the Jack of the next suit
@@ -173,7 +174,8 @@ bool Card::is_trump(Suit trump) const
 // EFFECTS Prints Card to stream, for example "Two of Spades"
 std::ostream &operator<<(std::ostream &os, const Card &card)
 {
-  os << get_rank() << " of " << get_suit();
+  os << RANK_NAMES[card.get_rank()] << " of " << SUIT_NAMES[card.get_suit()];
+  return os;
 }
 
 // EFFECTS Reads a Card from a stream in the format "Two of Spades"
@@ -181,14 +183,30 @@ std::ostream &operator<<(std::ostream &os, const Card &card)
 //      which means it is allowed to access card.rank and card.suit.
 std::istream &operator>>(std::istream &is, Card &card)
 {
-  assert(false);
+  string in_rank;
+  string in_suit;
+  string junk;
+  is >> in_rank >> junk >> in_suit;
+  card.rank = string_to_rank(in_rank);
+  card.suit = string_to_suit(in_suit);
 }
 
 // EFFECTS Returns true if lhs is lower value than rhs.
 //   Does not consider trump.
 bool operator<(const Card &lhs, const Card &rhs)
 {
-  assert(false);
+  if (lhs.get_suit() == rhs.get_suit()) // check if they are in the same suit
+  {
+    return lhs.get_rank() < rhs.get_rank(); // if suit are same -> check their rank
+  }
+  else if (lhs.get_suit() < rhs.get_suit()) // check if they first card's suit is lower than the other
+  {
+    return true;
+  }
+  else // else the first card suit is higher
+  {
+    return false;
+  }
 }
 
 // EFFECTS Returns true if lhs is lower value than rhs or the same card as rhs.
@@ -202,7 +220,18 @@ bool operator<=(const Card &lhs, const Card &rhs)
 //   Does not consider trump.
 bool operator>(const Card &lhs, const Card &rhs)
 {
-  assert(false);
+  if (lhs.get_suit() == rhs.get_suit())
+  {
+    return lhs.get_rank() > rhs.get_rank();
+  }
+  else if (lhs.get_suit() > rhs.get_suit())
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // EFFECTS Returns true if lhs is higher value than rhs or the same card as rhs.
@@ -216,14 +245,14 @@ bool operator>=(const Card &lhs, const Card &rhs)
 //   Does not consider trump.
 bool operator==(const Card &lhs, const Card &rhs)
 {
-  assert(false);
+  return ((lhs.get_rank() == rhs.get_rank()) && (lhs.get_suit() == rhs.get_suit()));
 }
 
 // EFFECTS Returns true if lhs is not the same card as rhs.
 //   Does not consider trump.
 bool operator!=(const Card &lhs, const Card &rhs)
 {
-  assert(false);
+  return !((lhs.get_rank() == rhs.get_rank()) && (lhs.get_suit() == rhs.get_suit()));
 }
 
 // EFFECTS returns the next suit, which is the suit of the same color
