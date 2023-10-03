@@ -135,7 +135,7 @@ Suit Card::get_suit() const
 // HINT: the left bower is the trump suit!
 Suit Card::get_suit(Suit trump) const
 {
-  assert(false);
+  return Suit_next(trump); // idk check later
 }
 
 // EFFECTS Returns true if card is a face card (Jack, Queen, King or Ace)
@@ -317,7 +317,67 @@ bool Card_less(const Card &a, const Card &b, Suit trump)
   // 1. a < b
   // 2. b > a
 
-  assert(false);
+  if (a != b)
+  {
+    if (a.get_suit() == b.get_suit())
+    {
+      if (!(b.is_left_bower(trump) || b.is_left_bower(trump)))
+      {
+        return a.get_rank() < b.get_rank();
+      }
+      else
+      {
+        return true;
+      }
+    }
+    else
+    {
+      if (b.get_suit() == trump)
+      {
+        if (a.get_rank() == JACK)
+        {
+          if (b.get_rank() == JACK)
+          {
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
+        else
+        {
+          return true;
+        }
+      }
+      else if (a.get_suit() == trump)
+      {
+        if (b.get_rank() == JACK)
+        {
+          if (a.get_rank() == JACK)
+          {
+            return false;
+          }
+          else
+          {
+            return true;
+          }
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        return a < b;
+      }
+    }
+  }
+  else
+  {
+    return false;
+  }
 }
 
 // EFFECTS Returns true if a is lower value than b.  Uses both the trump suit
