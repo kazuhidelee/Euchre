@@ -189,6 +189,7 @@ std::istream &operator>>(std::istream &is, Card &card)
   is >> in_rank >> junk >> in_suit;
   card.rank = string_to_rank(in_rank);
   card.suit = string_to_suit(in_suit);
+  return is;
 }
 
 // EFFECTS Returns true if lhs is lower value than rhs.
