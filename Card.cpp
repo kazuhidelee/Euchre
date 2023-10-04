@@ -285,7 +285,7 @@ Suit Suit_next(Suit suit)
   {
     return CLUBS;
   }
-  else if (suit == CLUBS)
+  else
   {
     return SPADES;
   }

@@ -18,6 +18,20 @@ TEST(test_suit_comparison)
     ASSERT_TRUE(ace_hearts < ace_diamonds);
 }
 
+TEST(test_less_than)
+{
+    Card ace_hearts(ACE, HEARTS);
+    Card jack_diamond(JACK, DIAMONDS);
+    ASSERT_TRUE(Card_less(ace_hearts, jack_diamond, HEARTS));
+}
+
+TEST(test_suit_next)
+{
+    ASSERT_EQUAL(Suit_next(DIAMONDS), HEARTS);
+    ASSERT_EQUAL(Suit_next(HEARTS), DIAMONDS);
+    ASSERT_EQUAL(Suit_next(CLUBS), SPADES);
+    ASSERT_EQUAL(Suit_next(SPADES), CLUBS);
+}
 // Add more test cases here
 
 TEST_MAIN()
