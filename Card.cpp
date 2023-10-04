@@ -207,13 +207,16 @@ bool operator<(const Card &lhs, const Card &rhs)
   {
     return lhs.get_rank() < rhs.get_rank(); // if suit are same -> check their rank
   }
-  else if (lhs.get_suit() < rhs.get_suit()) // check if they first card's suit is lower than the other
+  else // check if they first card's suit is lower than the other
   {
-    return true;
-  }
-  else // else the first card suit is higher
-  {
-    return false;
+    if (lhs.get_rank() == rhs.get_rank())
+    {
+      return lhs.get_suit() < rhs.get_suit();
+    }
+    else
+    {
+      return lhs.get_rank() < rhs.get_rank();
+    }
   }
 }
 
@@ -239,13 +242,16 @@ bool operator>(const Card &lhs, const Card &rhs)
   {
     return lhs.get_rank() > rhs.get_rank();
   }
-  else if (lhs.get_suit() > rhs.get_suit())
-  {
-    return true;
-  }
   else
   {
-    return false;
+    if (lhs.get_rank() == rhs.get_rank())
+    {
+      return lhs.get_suit() > rhs.get_suit();
+    }
+    else
+    {
+      return lhs.get_rank() > rhs.get_rank();
+    }
   }
 }
 
@@ -392,5 +398,15 @@ bool Card_less(const Card &a, const Card &b, Suit trump)
 bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump)
 {
   // Trump suit > Led suit
-  assert(false);
+  if (a != b)
+  {
+    if (led_card.get_suit() == trump)
+    {
+      return (Card_less(a, b, trump));
+    }
+  }
+  else
+  {
+    return false;
+  }
 }
