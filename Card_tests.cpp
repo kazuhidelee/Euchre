@@ -32,6 +32,13 @@ TEST(test_suit_next)
     ASSERT_EQUAL(Suit_next(CLUBS), SPADES);
     ASSERT_EQUAL(Suit_next(SPADES), CLUBS);
 }
-// Add more test cases here
+
+TEST(test_bowers)
+{
+    Card jack_diamond(JACK, DIAMONDS);
+    Card jack_hearts(JACK, HEARTS);
+    ASSERT_TRUE(jack_diamond.is_right_bower(DIAMONDS));
+    ASSERT_TRUE(jack_diamond.is_left_bower(HEARTS));
+}
 
 TEST_MAIN()
