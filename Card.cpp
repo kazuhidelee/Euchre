@@ -135,7 +135,14 @@ Suit Card::get_suit() const
 // HINT: the left bower is the trump suit!
 Suit Card::get_suit(Suit trump) const
 {
-  return Suit_next(trump); // idk check later
+  if (is_left_bower(trump))
+  {
+    return trump;
+  }
+  else
+  {
+    return suit;
+  }
 }
 
 // EFFECTS Returns true if card is a face card (Jack, Queen, King or Ace)
@@ -384,5 +391,6 @@ bool Card_less(const Card &a, const Card &b, Suit trump)
 //   and the suit led to determine order, as described in the spec.
 bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump)
 {
+  // Trump suit > Led suit
   assert(false);
 }
