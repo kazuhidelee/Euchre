@@ -168,7 +168,7 @@ bool Card::is_left_bower(Suit trump) const
 //  suit are trump cards.  The left bower is also a trump card.
 bool Card::is_trump(Suit trump) const
 {
-  return suit == trump;
+  return suit == trump || is_left_bower(trump);
 }
 
 // This "friend declaration" allows the implementation of operator>>
@@ -308,84 +308,50 @@ Suit Suit_next(Suit suit)
 //  order, as described in the spec.
 bool Card_less(const Card &a, const Card &b, Suit trump)
 {
-  // 1. same card
-  // 2. diff card
-  // 1. same suit
-  // 1.b is JACK(trump or next)
-  // 2.b is NOT JACK(trump or next)
-  // 1. a rank < b rank
-  // 2. b rank > b rank
-  // 2. diff suit
-  // 1. b is trump suit
-  // 1. a is JACK(trump or next)
-  // 1. b is JACK
-  // 2. b is NOT JACK
-  // 2. a is NOY JACK(trump or next)
-  // 2. a is trump suit
-  // 1. b is JACK(trump or next)
-  // 1. a is JACK
-  // 2. b is NOT JACK
-  // 2. b is NOY JACK(trump or next)
-  // 3. both are NOT trump suit
-  // 1. a < b
-  // 2. b > a
-
-  if (a != b)
+  if (a.get_suit(trump) == trump && b.get_suit(trump) == trump)
   {
-    if (a.get_suit() == b.get_suit())
+    if (a.get_rank() == JACK && b.get_rank() != JACK)
     {
-      if (!(b.is_left_bower(trump) || b.is_left_bower(trump)))
-      {
-        return a.get_rank() < b.get_rank();
-      }
-      else
-      {
-        return true;
-      }
+      return false;
+    }
+    else if (b.get_rank() == JACK && a.get_rank() != JACK)
+    {
+      return true;
+    }
+    else if (a.get_rank() == JACK && b.get_rank() == JACK)
+    {
+      return a.is_left_bower(trump);
     }
     else
     {
-      if (b.get_suit() == trump)
-      {
-        if (a.get_rank() == JACK)
-        {
-          if (b.get_rank() == JACK)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
-        }
-        else
-        {
-          return true;
-        }
-      }
-      else if (a.get_suit() == trump)
-      {
-        if (b.get_rank() == JACK)
-        {
-          if (a.get_rank() == JACK)
-          {
-            return false;
-          }
-          else
-          {
-            return true;
-          }
-        }
-        else
-        {
-          return false;
-        }
-      }
-      else
-      {
-        return a < b;
-      }
+      return a.get_rank() < b.get_rank();
     }
+  }
+  else if (a.get_suit(trump) == trump && b.get_suit(trump) != trump)
+  {
+    if (b.get_rank() == JACK)
+    {
+      return !(a.get_rank() == JACK);
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else if (a.get_suit(trump) != trump && b.get_suit(trump) == trump)
+  {
+    if (a.get_rank() == JACK)
+    {
+      return b.get_rank() == JACK;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  else if (a.get_suit(trump) != trump && b.get_suit(trump) != trump)
+  {
+    return a < b;
   }
   else
   {
@@ -398,11 +364,65 @@ bool Card_less(const Card &a, const Card &b, Suit trump)
 bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump)
 {
   // Trump suit > Led suit
-  if (a != b)
+  Suit led_suit = led_card.get_suit();
+  if (a.get_suit(trump) == trump && b.get_suit(trump) == trump)
   {
-    if (led_card.get_suit() == trump)
+    if (a.get_rank() == JACK && b.get_rank() != JACK)
     {
-      return (Card_less(a, b, trump));
+      return false;
+    }
+    else if (b.get_rank() == JACK && a.get_rank() != JACK)
+    {
+      return true;
+    }
+    else if (a.get_rank() == JACK && b.get_rank() == JACK)
+    {
+      return a.is_left_bower(trump);
+    }
+    else
+    {
+      return a.get_rank() < b.get_rank();
+    }
+  }
+  else if (a.get_suit(trump) == trump && b.get_suit(trump) != trump)
+  {
+    if (b.get_rank() == JACK)
+    {
+      return !(a.get_rank() == JACK);
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else if (a.get_suit(trump) != trump && b.get_suit(trump) == trump)
+  {
+    if (a.get_rank() == JACK)
+    {
+      return b.get_rank() == JACK;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  else if (a.get_suit(trump) != trump && b.get_suit(trump) != trump)
+  {
+    if (a.get_suit() == led_suit && b.get_suit() == led_suit)
+    {
+      return a.get_suit() < b.get_suit();
+    }
+    else if (a.get_suit() == led_suit && b.get_suit() != led_suit)
+    {
+      return false;
+    }
+    else if (a.get_suit() != led_suit && b.get_suit() == led_suit)
+    {
+      return true;
+    }
+    else
+    {
+      return a < b;
     }
   }
   else
