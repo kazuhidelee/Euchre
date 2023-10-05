@@ -171,4 +171,125 @@ TEST(test_istream)
     ASSERT_EQUAL(c.get_suit(), DIAMONDS);
 }
 
+TEST(test_smaller)
+{
+    Card a(ACE, DIAMONDS);
+    Card b(ACE, HEARTS);
+    ASSERT_TRUE(b < a);
+    Card c(JACK, HEARTS);
+    Card d(ACE, SPADES);
+    ASSERT_TRUE(c < d);
+    Card e(KING, CLUBS);
+    Card f(TEN, CLUBS);
+    ASSERT_TRUE(f < e);
+}
+
+TEST(test_smaller_equal)
+{
+    Card a(ACE, DIAMONDS);
+    Card b(ACE, HEARTS);
+    ASSERT_TRUE(b <= a);
+    Card c(JACK, HEARTS);
+    Card d(ACE, SPADES);
+    ASSERT_TRUE(c <= d);
+    Card e(KING, CLUBS);
+    Card f(TEN, CLUBS);
+    ASSERT_TRUE(f <= e);
+    Card g(QUEEN, SPADES);
+    Card h(QUEEN, SPADES);
+    ASSERT_TRUE(g <= h);
+    ASSERT_TRUE(h <= g);
+}
+
+TEST(test_bigger)
+{
+    Card a(ACE, DIAMONDS);
+    Card b(ACE, HEARTS);
+    ASSERT_TRUE(a > b);
+    Card c(JACK, HEARTS);
+    Card d(ACE, SPADES);
+    ASSERT_TRUE(d > c);
+    Card e(KING, CLUBS);
+    Card f(TEN, CLUBS);
+    ASSERT_TRUE(e > f);
+}
+
+TEST(test_bigger_equal)
+{
+    Card a(ACE, DIAMONDS);
+    Card b(ACE, HEARTS);
+    ASSERT_TRUE(a >= b);
+    Card c(JACK, HEARTS);
+    Card d(ACE, SPADES);
+    ASSERT_TRUE(d >= c);
+    Card e(KING, CLUBS);
+    Card f(TEN, CLUBS);
+    ASSERT_TRUE(e >= f);
+    Card g(QUEEN, SPADES);
+    Card h(QUEEN, SPADES);
+    ASSERT_TRUE(h >= g);
+    ASSERT_TRUE(g >= h);
+}
+
+TEST(test_equal)
+{
+    Card a(JACK, DIAMONDS);
+    Card b(JACK, HEARTS);
+    Card c(JACK, DIAMONDS);
+    Card d(QUEEN, CLUBS);
+    Card e(ACE, DIAMONDS);
+
+    ASSERT_TRUE(a == c);
+    ASSERT_FALSE(a == b);
+    ASSERT_FALSE(b == c);
+    ASSERT_FALSE(c == e);
+    ASSERT_FALSE(c == d);
+}
+
+TEST(test_not_equal)
+{
+    Card a(JACK, DIAMONDS);
+    Card b(JACK, HEARTS);
+    Card c(JACK, DIAMONDS);
+    Card d(QUEEN, CLUBS);
+    Card e(ACE, DIAMONDS);
+
+    ASSERT_FALSE(a != c);
+    ASSERT_TRUE(a != b);
+    ASSERT_TRUE(b != c);
+    ASSERT_TRUE(c != e);
+    ASSERT_TRUE(c != d);
+}
+
+TEST(test_card_less)
+{
+    Card a(JACK, CLUBS);
+    Card b(JACK, SPADES);
+    ASSERT_TRUE(Card_less(a, b, SPADES));
+    Card c(ACE, SPADES);
+    ASSERT_TRUE(Card_less(c, a, SPADES));
+    Card d(NINE, CLUBS);
+    ASSERT_TRUE(Card_less(c, d, CLUBS));
+    ASSERT_TRUE(Card_less(c, b, SPADES));
+    Card e(ACE, HEARTS);
+    ASSERT_TRUE(Card_less(d, e, SPADES));
+    ASSERT_FALSE(Card_less(d, d, HEARTS));
+}
+
+TEST(test_card_less_with_led)
+{
+    Card led_card1(JACK, DIAMONDS);
+    Card led_card2(KING, CLUBS);
+    Card a(JACK, CLUBS);
+    Card b(JACK, SPADES);
+    ASSERT_TRUE(Card_less(a, b, led_card1, SPADES));
+    ASSERT_TRUE(Card_less(led_card1, a, led_card1, SPADES));
+    Card c(QUEEN, DIAMONDS);
+    Card d(NINE, CLUBS);
+    ASSERT_TRUE(Card_less(c, d, led_card2, SPADES));
+    ASSERT_TRUE(Card_less(d, c, led_card2, DIAMONDS));
+    Card e(TEN, HEARTS);
+    ASSERT_TRUE(Card_less(d, e, led_card1, SPADES));
+}
+
 TEST_MAIN()
