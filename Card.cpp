@@ -161,7 +161,7 @@ bool Card::is_right_bower(Suit trump) const
 // EFFECTS Returns true if card is the Jack of the next suit
 bool Card::is_left_bower(Suit trump) const
 {
-  return (suit == Suit_next(trump) && rank == JACK);
+  return ((suit == Suit_next(trump)) && (rank == JACK));
 }
 
 // EFFECTS Returns true if the card is a trump card.  All cards of the trump
@@ -364,7 +364,7 @@ bool Card_less(const Card &a, const Card &b, Suit trump)
 bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump)
 {
   // Trump suit > Led suit
-  Suit led_suit = led_card.get_suit();
+  Suit led_suit = led_card.get_suit(trump);
   if (a.get_suit(trump) == trump && b.get_suit(trump) == trump)
   {
     if (a.get_rank() == JACK && b.get_rank() != JACK)
