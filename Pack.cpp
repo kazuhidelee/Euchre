@@ -3,6 +3,7 @@
 #include <array>
 #include "Pack.hpp"
 #include "Card.hpp"
+#include <sstream>
 
 using namespace std;
 
@@ -14,7 +15,15 @@ using namespace std;
 // NOTE: Do NOT use pack.in in your implementation of this function
 Pack::Pack()
 {
-	assert(false);
+	Card Pack[PACK_SIZE];
+	string suit[] = {"SPADES", "HEARTS", "CLUBS", "DIAMONDS"};
+	string rank[] = {"NINE", "TEN", "JACK", "QUEEN", "KING", "ACE"};
+
+	for (int i = 0; i < PACK_SIZE; ++i)
+	{
+		istringstream input(suit[i] + " of " + rank[i]);
+		input >> Pack[i];
+	}
 }
 
 // REQUIRES: pack_input contains a representation of a Pack in the
@@ -37,6 +46,7 @@ Card Pack::deal_one()
 void Pack::reset()
 {
 	assert(false);
+	assert(next);
 }
 
 // EFFECTS: Shuffles the Pack and resets the next index. This
