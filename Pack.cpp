@@ -63,14 +63,14 @@ void Pack::shuffle()
 {
 	Card copy[PACK_SIZE];
 	int i;
-	//put this copy inside the 7 time for loop
+	// put this copy inside the 7 time for loop
 	i = 0;
 	for (int j = 0; j < 7; ++j)
 	{
 		for (i = 0; i < PACK_SIZE; ++i)
-	{
-		copy[i] = cards[i];
-	}
+		{
+			copy[i] = cards[i];
+		}
 		if (i == 0)
 		{
 			cards[i + 1] = copy[i];
@@ -82,19 +82,19 @@ void Pack::shuffle()
 	}
 	reset();
 
-	//copy over first half and second half of the array using the first copy[i] = cards[i]
-	//go through and copy it one by one
-	//shuffle 7 times
+	// copy over first half and second half of the array using the first copy[i] = cards[i]
+	// go through and copy it one by one
+	// shuffle 7 times
 }
 
 // EFFECTS: returns true if there are no more cards left in the pack
 bool Pack::empty() const
 {
-	if (next > 23) 
+	if (next > 23)
 	{
 		return true;
 	}
-	else 
+	else
 	{
 		return false;
 	}
