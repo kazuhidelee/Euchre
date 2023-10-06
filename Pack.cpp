@@ -47,13 +47,13 @@ Card Pack::deal_one()
 {
 
 	return cards[next];
-	next += 1;
+	++next;
 }
 
 // EFFECTS: Resets next index to first card in the Pack
 void Pack::reset()
 {
-	next = 1;
+	next = 0;
 }
 
 // EFFECTS: Shuffles the Pack and resets the next index. This
@@ -63,14 +63,14 @@ void Pack::shuffle()
 {
 	Card copy[PACK_SIZE];
 	int i;
-	for (i = 0; i < PACK_SIZE; ++i)
-	{
-		copy[i] = cards[i];
-	}
-
+	//put this copy inside the 7 time for loop
 	i = 0;
 	for (int j = 0; j < 7; ++j)
 	{
+		for (i = 0; i < PACK_SIZE; ++i)
+	{
+		copy[i] = cards[i];
+	}
 		if (i == 0)
 		{
 			cards[i + 1] = copy[i];
@@ -81,10 +81,21 @@ void Pack::shuffle()
 		}
 	}
 	reset();
+
+	//copy over first half and second half of the array using the first copy[i] = cards[i]
+	//go through and copy it one by one
+	//shuffle 7 times
 }
 
 // EFFECTS: returns true if there are no more cards left in the pack
 bool Pack::empty() const
 {
-	return (next > PACK_SIZE - 1);
+	if (next > 23) 
+	{
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
 }
