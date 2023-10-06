@@ -15,15 +15,17 @@ using namespace std;
 // NOTE: Do NOT use pack.in in your implementation of this function
 Pack::Pack()
 {
-	Card Pack[PACK_SIZE];
-	string suit[] = {"SPADES", "HEARTS", "CLUBS", "DIAMONDS"};
-	string rank[] = {"NINE", "TEN", "JACK", "QUEEN", "KING", "ACE"};
-
-	for (int i = 0; i < PACK_SIZE; ++i)
+	for (int i = SPADES; i <= DIAMONDS; ++i)
 	{
-		istringstream input(suit[i] + " of " + rank[i]);
-		input >> Pack[i];
+		for (int j = NINE; j <= ACE; ++j)
+		{
+			Suit suit = static_cast<Suit>(i);
+			Rank rank = static_cast<Rank>(j);
+			Card a(rank, suit);
+			cards[i * 6 + (j - 7)] = a;
+		}
 	}
+	next = 0;
 }
 
 // REQUIRES: pack_input contains a representation of a Pack in the
@@ -32,21 +34,26 @@ Pack::Pack()
 // EFFECTS: Initializes Pack by reading from pack_input.
 Pack::Pack(std::istream &pack_input)
 {
-	assert(false);
+	for (int i = 0; i < PACK_SIZE; ++i)
+	{
+		pack_input >> cards[i];
+	}
+	next = 0;
 }
 
 // REQUIRES: cards remain in the Pack
 // EFFECTS: Returns the next card in the pack and increments the next index
 Card Pack::deal_one()
 {
-	assert(false);
+
+	return cards[next];
+	next += 1;
 }
 
 // EFFECTS: Resets next index to first card in the Pack
 void Pack::reset()
 {
-	assert(false);
-	assert(next);
+	next = 1;
 }
 
 // EFFECTS: Shuffles the Pack and resets the next index. This
@@ -54,11 +61,30 @@ void Pack::reset()
 //          https://en.wikipedia.org/wiki/In_shuffle.
 void Pack::shuffle()
 {
-	assert(false);
+	Card copy[PACK_SIZE];
+	int i;
+	for (i = 0; i < PACK_SIZE; ++i)
+	{
+		copy[i] = cards[i];
+	}
+
+	i = 0;
+	for (int j = 0; j < 7; ++j)
+	{
+		if (i == 0)
+		{
+			cards[i + 1] = copy[i];
+		}
+		for (i = 1; i < PACK_SIZE; ++i)
+		{
+			cards[(i + i) % PACK_SIZE] = copy[i];
+		}
+	}
+	reset();
 }
 
 // EFFECTS: returns true if there are no more cards left in the pack
 bool Pack::empty() const
 {
-	assert(false);
+	return (next > PACK_SIZE - 1);
 }
