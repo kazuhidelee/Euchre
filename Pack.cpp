@@ -45,9 +45,9 @@ Pack::Pack(std::istream &pack_input)
 // EFFECTS: Returns the next card in the pack and increments the next index
 Card Pack::deal_one()
 {
-
-	return cards[next];
-	++next;
+	int next_index = next;
+	next += 1;
+	return cards[next_index];
 }
 
 // EFFECTS: Resets next index to first card in the Pack
@@ -62,22 +62,25 @@ void Pack::reset()
 void Pack::shuffle()
 {
 	Card copy[PACK_SIZE];
-	int i;
+	int i = 0;
 	// put this copy inside the 7 time for loop
-	i = 0;
+	int k = 0;
 	for (int j = 0; j < 7; ++j)
 	{
 		for (i = 0; i < PACK_SIZE; ++i)
 		{
 			copy[i] = cards[i];
 		}
-		if (i == 0)
+		for (k = 0; k < PACK_SIZE; ++k)
 		{
-			cards[i + 1] = copy[i];
-		}
-		for (i = 1; i < PACK_SIZE; ++i)
-		{
-			cards[(i + i) % PACK_SIZE] = copy[i];
+			if (k + (k + 1) < PACK_SIZE)
+			{
+				cards[(k + (k + 1))] = copy[k];
+			}
+			else
+			{
+				cards[(k + (k + 1)) - PACK_SIZE - 1] = copy[k];
+			}
 		}
 	}
 	reset();
@@ -90,12 +93,14 @@ void Pack::shuffle()
 // EFFECTS: returns true if there are no more cards left in the pack
 bool Pack::empty() const
 {
-	if (next > 23)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	// if (next > 23)
+	// {
+	// 	return true;
+	// }
+	// else
+	// {
+	// 	return false;
+	// }
+
+	return next - PACK_SIZE >= 0;
 }
