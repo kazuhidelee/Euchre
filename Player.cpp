@@ -32,17 +32,108 @@ public:
 	bool make_trump(const Card &upcard, bool is_dealer,
 					int round, Suit &order_up_suit) const
 	{
+		Suit up_suit = upcard.get_suit();
+		int card_count = 0;
+		if (round == 1)
+		{
+			for (int i = 0; i < hand.size(); ++i)
+			{
+				if (hand[i].is_left_bower(up_suit) || hand[i].is_right_bower(up_suit) ||
+					(hand[i].is_face_or_ace() && hand[i].is_trump(up_suit)))
+				{
+					card_count += 1;
+				}
+			}
+			if (card_count >= 2)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if (round == 2)
+		{
+			for (int i = 0; i < hand.size(); ++i)
+			{
+				if (hand[i].is_left_bower(order_up_suit) || hand[i].is_right_bower(order_up_suit) ||
+					(hand[i].is_face_or_ace() && hand[i].is_trump(order_up_suit)))
+				{
+					card_count += 1;
+				}
+			}
+			if (card_count >= 1)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false; // Need to implement screw the dealer
+		}
 	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Player adds one card to hand and removes one card from hand.
-	void add_and_discard(const Card &upcard) = 0;
+	void add_and_discard(const Card &upcard)
+	{
+		int min_index = 0;
+		hand.push_back(upcard);
+		Suit upsuit = upcard.get_suit();
+		for (int i = 0; i < hand.size(); ++i)
+		{
+			if (Card_less(hand[i], hand[min_index], upsuit))
+			{
+				min_index = i;
+			}
+		}
+		hand.erase(hand.begin() + min_index);
+	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Leads one Card from Player's hand according to their strategy
 	//   "Lead" means to play the first Card in a trick.  The card
 	//   is removed the player's hand.
-	Card lead_card(Suit trump) = 0;
+	Card lead_card(Suit trump)
+	{
+		int max_index = 0;
+		bool all_trump = true;
+		for (int k = 0; k < hand.size(); ++k)
+		{
+			if (!(hand[k].is_trump(trump)))
+			{
+				all_trump = false;
+			}
+		}
+		if (!(all_trump))
+		{
+			for (int i = 0; i < hand.size(); ++i)
+			{
+				if (!(hand[i].is_trump(trump)) && (Card_less(hand[max_index], hand[i], trump)))
+				{
+					max_index = i;
+				}
+			}
+		}
+		else
+		{
+			for (int j = 0; j < hand.size(); ++j)
+			{
+				if (Card_less(hand[max_index], hand[j], trump))
+				{
+					max_index = j;
+				}
+			}
+		}
+		Card lead = hand[max_index];
+		hand.erase(hand.begin() + max_index);
+		return lead;
+	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Plays one Card from Player's hand according to their strategy.
