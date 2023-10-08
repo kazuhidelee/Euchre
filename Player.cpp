@@ -10,7 +10,7 @@ using namespace std;
 class SimplePlayer : public Player
 {
 public:
-	SimplePlayer(const string name_input)
+	SimplePlayer(const string &name_input)
 		: type("Simple"), name(name_input) {}
 	// EFFECTS returns player's name
 	const std::string &get_name() const
@@ -57,7 +57,7 @@ private:
 class HumanPlayer : public Player
 {
 public:
-	HumanPlayer(const string name_input)
+	HumanPlayer(const string &name_input)
 		: type("Human"), name(name_input) {}
 	// EFFECTS returns player's name
 	const std::string &get_name() const = 0;
