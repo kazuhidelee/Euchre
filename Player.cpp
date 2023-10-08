@@ -3,6 +3,7 @@
 #include <array>
 #include "Player.hpp"
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
