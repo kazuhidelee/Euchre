@@ -19,7 +19,10 @@ public:
 	}
 	// REQUIRES player has less than MAX_HAND_SIZE cards
 	// EFFECTS  adds Card c to Player's hand
-	void add_card(const Card &c) = 0;
+	void add_card(const Card &c)
+	{
+		hand.push_back(c); // idk check later
+	}
 
 	// REQUIRES round is 1 or 2
 	// MODIFIES order_up_suit
@@ -27,7 +30,9 @@ public:
 	//   change order_up_suit to desired suit.  If Player wishes to pass, then do
 	//   not modify order_up_suit and return false.
 	bool make_trump(const Card &upcard, bool is_dealer,
-					int round, Suit &order_up_suit) const = 0;
+					int round, Suit &order_up_suit) const
+	{
+	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Player adds one card to hand and removes one card from hand.
@@ -44,14 +49,12 @@ public:
 	//   The card is removed from the player's hand.
 	Card play_card(const Card &led_card, Suit trump) = 0;
 
-	// Maximum number of cards in a player's hand
-	static const int MAX_HAND_SIZE = 5;
-
 	// Needed to avoid some compiler errors
 	//~Player() {}
 private:
 	string type;
 	string name;
+	vector<Card> hand;
 };
 
 class HumanPlayer : public Player
@@ -97,6 +100,7 @@ public:
 private:
 	string type;
 	string name;
+	vector<Card> hand;
 };
 
 // EFFECTS: Returns a pointer to a player with the given name and strategy
