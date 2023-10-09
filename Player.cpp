@@ -199,7 +199,10 @@ public:
 
 	// REQUIRES player has less than MAX_HAND_SIZE cards
 	// EFFECTS  adds Card c to Player's hand
-	void add_card(const Card &c) = 0;
+	void add_card(const Card &c)
+	{
+		hand.push_back(c);
+	}
 
 	// REQUIRES round is 1 or 2
 	// MODIFIES order_up_suit

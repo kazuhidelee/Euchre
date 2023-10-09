@@ -45,9 +45,9 @@ Pack::Pack(std::istream &pack_input)
 // EFFECTS: Returns the next card in the pack and increments the next index
 Card Pack::deal_one()
 {
-	int next_index = next;
-	next += 1;
-	return cards[next_index];
+	// int next_index = next;
+	// next += 1;
+	return cards[next++];
 }
 
 // EFFECTS: Resets next index to first card in the Pack
