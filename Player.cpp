@@ -21,7 +21,7 @@ public:
 	// EFFECTS  adds Card c to Player's hand
 	void add_card(const Card &c)
 	{
-		hand.push_back(c); // idk check later
+		hand.push_back(c);
 	}
 
 	// REQUIRES round is 1 or 2
@@ -103,6 +103,7 @@ public:
 	{
 		int max_index = 0;
 		bool all_trump = true;
+		// Check if all cards are trump
 		for (int k = 0; k < hand.size(); ++k)
 		{
 			if (!(hand[k].is_trump(trump)))
@@ -138,7 +139,44 @@ public:
 	// REQUIRES Player has at least one card
 	// EFFECTS  Plays one Card from Player's hand according to their strategy.
 	//   The card is removed from the player's hand.
-	Card play_card(const Card &led_card, Suit trump) = 0;
+	Card play_card(const Card &led_card, Suit trump)
+	{
+		bool follow_suit = false;
+		Suit led_suit = led_card.get_suit();
+		Card highest = hand[0];
+		Card lowest = hand[0];
+		// Check if the player can follow suit
+		for (int i = 0; i < hand.size(); ++i)
+		{
+			if (hand[i].get_suit() == led_suit)
+			{
+				follow_suit = true;
+			}
+		}
+		if (follow_suit)
+		{
+			for (int j = 0; j < hand.size(); ++j)
+			{
+				if (Card_less(highest, hand[j], led_card, trump) &&
+					hand[j].get_suit() == led_suit)
+				{
+					highest = hand[j];
+				}
+			}
+			return highest;
+		}
+		else
+		{
+			for (int k = 0; k < hand.size(); ++k)
+			{
+				if (Card_less(hand[k], lowest, led_card, trump))
+				{
+					lowest = hand[k];
+				}
+			}
+			return lowest;
+		}
+	}
 
 	// Needed to avoid some compiler errors
 	//~Player() {}
