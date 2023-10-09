@@ -192,7 +192,10 @@ public:
 	HumanPlayer(const string &name_input)
 		: type("Human"), name(name_input) {}
 	// EFFECTS returns player's name
-	const std::string &get_name() const = 0;
+	const std::string &get_name() const
+	{
+		return name;
+	}
 
 	// REQUIRES player has less than MAX_HAND_SIZE cards
 	// EFFECTS  adds Card c to Player's hand
