@@ -13,7 +13,7 @@ public:
 	SimplePlayer(const string &name_input)
 		: type("Simple"), name(name_input) {}
 	// EFFECTS returns player's name
-	const std::string &get_name() const
+	const std::string &get_name() const override
 	{
 		return name;
 	}
@@ -30,7 +30,7 @@ public:
 	//   change order_up_suit to desired suit.  If Player wishes to pass, then do
 	//   not modify order_up_suit and return false.
 	bool make_trump(const Card &upcard, bool is_dealer,
-					int round, Suit &order_up_suit) const
+					int round, Suit &order_up_suit) const override
 	{
 		Suit up_suit = upcard.get_suit();
 		int card_count = 0;
@@ -54,7 +54,7 @@ public:
 				return false;
 			}
 		}
-		else if (round == 2)
+		else if (round == 2 && !is_dealer)
 		{
 			for (int i = 0; i < hand.size(); ++i)
 			{
@@ -76,7 +76,8 @@ public:
 		}
 		else
 		{
-			return false; // Need to implement screw the dealer
+			order_up_suit = Suit_next(up_suit);
+			return true; // Need to implement screw the dealer
 		}
 	}
 
@@ -165,20 +166,22 @@ public:
 					highest = j;
 				}
 			}
+			Card most = hand[highest];
 			hand.erase(hand.begin() + highest);
-			return hand[highest];
+			return most;
 		}
 		else
 		{
 			for (int k = 0; k < hand.size(); ++k)
 			{
-				if (Card_less(hand[k], hand[lowest], led_card, trump))
+				if (Card_less(hand[k], hand[lowest], trump))
 				{
 					lowest = k;
 				}
 			}
+			Card least = hand[lowest];
 			hand.erase(hand.begin() + lowest);
-			return hand[lowest];
+			return least;
 		}
 	}
 
@@ -196,7 +199,8 @@ public:
 	HumanPlayer(const string &name_input)
 		: type("Human"), name(name_input) {}
 	// EFFECTS returns player's name
-	const std::string &get_name() const
+
+	const std::string &get_name() const override
 	{
 		return name;
 	}
@@ -216,13 +220,41 @@ public:
 	bool make_trump(const Card &upcard, bool is_dealer,
 					int round, Suit &order_up_suit) const override
 	{
+		string decision;
+		print_hand();
+		cout << "Human player " << name << ", please enter a suit, or \"pass\":\n";
+		cin >> decision;
+		if (decision != "pass")
+		{
+			order_up_suit = string_to_suit(decision);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Player adds one card to hand and removes one card from hand.
 	void add_and_discard(const Card &upcard) override
 	{
-		hand.push_back(upcard);
+		int decision;
+		print_hand();
+		cout << "Discard upcard: [-1]\n";
+		cout << "Human player " << name << ", please select a card to discard:\n";
+		cin >> decision;
+		add_card(upcard);
+
+		if (decision == -1)
+		{
+			hand.erase(hand.end());
+		}
+		else
+		{
+			hand.erase(hand.begin() + decision);
+		}
+		sort(hand.begin(), hand.end());
 	}
 
 	// REQUIRES Player has at least one card
@@ -231,6 +263,14 @@ public:
 	//   is removed the player's hand.
 	Card lead_card(Suit trump) override
 	{
+		int decision;
+		Card lead;
+		print_hand();
+		cout << "Human player " << name << ", please select a card:\n";
+		cin >> decision;
+		lead = hand[decision];
+		hand.erase(hand.begin() + decision);
+		return lead;
 	}
 
 	// REQUIRES Player has at least one card
@@ -238,6 +278,14 @@ public:
 	//   The card is removed from the player's hand.
 	Card play_card(const Card &led_card, Suit trump) override
 	{
+		int decision;
+		Card lead;
+		print_hand();
+		cout << "Human player " << name << ", please select a card:\n";
+		cin >> decision;
+		lead = hand[decision];
+		hand.erase(hand.begin() + decision);
+		return lead;
 	}
 
 	// Maximum number of cards in a player's hand
@@ -249,6 +297,12 @@ private:
 	string type;
 	string name;
 	vector<Card> hand;
+	void print_hand() const
+	{
+		for (size_t i = 0; i < hand.size(); ++i)
+			cout << "Human player " << name << "'s hand: "
+				 << "[" << i << "] " << hand[i] << "\n";
+	}
 };
 
 // EFFECTS: Returns a pointer to a player with the given name and strategy
@@ -280,5 +334,6 @@ Player_factory(const std::string &name,
 // EFFECTS: Prints player's name to os
 std::ostream &operator<<(std::ostream &os, const Player &p)
 {
-	assert(false);
+	os << p.get_name();
+	return os;
 }
