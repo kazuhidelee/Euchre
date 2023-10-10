@@ -109,4 +109,44 @@ TEST(test_player_make_trump_and_order_up)
     delete bob;
 }
 
+TEST(test_play_card_cant_follow_suit)
+{
+    // Bob's hand
+    Player * bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(NINE, DIAMONDS));
+    bob->add_card(Card(TEN, HEARTS));
+    bob->add_card(Card(QUEEN, HEARTS));
+    bob->add_card(Card(ACE, HEARTS));
+    bob->add_card(Card(JACK, DIAMONDS));
+
+
+    Player *rob = Player_factory("Rob", "Simple");
+    rob->add_card(Card(NINE, HEARTS));
+    rob->add_card(Card(TEN, SPADES));
+    rob->add_card(Card(QUEEN, CLUBS));
+    rob->add_card(Card(KING, CLUBS));
+    rob->add_card(Card(ACE, SPADES));
+
+
+    // Bob plays a card
+    Card led_card (JACK, DIAMONDS);
+    Card bob_card_played = bob->play_card(
+    led_card,  // Jack of Diamonds is led
+    HEARTS    // Trump suit
+    );
+
+
+    Card rob_card_played = rob->play_card(
+    led_card,  // Jack of Diamonds is led
+    HEARTS    // Trump suit
+    );
+
+
+    // Verify the card Bob played
+    ASSERT_EQUAL(bob_card_played, Card(JACK, DIAMONDS));
+    ASSERT_EQUAL(rob_card_played, Card(NINE, HEARTS));
+    delete bob;
+    delete rob;
+}
+
 TEST_MAIN()
