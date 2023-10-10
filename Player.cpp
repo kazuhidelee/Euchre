@@ -19,7 +19,7 @@ public:
 	}
 	// REQUIRES player has less than MAX_HAND_SIZE cards
 	// EFFECTS  adds Card c to Player's hand
-	void add_card(const Card &c)
+	void add_card(const Card &c) override
 	{
 		hand.push_back(c);
 	}
@@ -46,6 +46,7 @@ public:
 			}
 			if (card_count >= 2)
 			{
+				order_up_suit = up_suit;
 				return true;
 			}
 			else
@@ -65,6 +66,7 @@ public:
 			}
 			if (card_count >= 1)
 			{
+				order_up_suit = up_suit;
 				return true;
 			}
 			else
@@ -80,7 +82,7 @@ public:
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Player adds one card to hand and removes one card from hand.
-	void add_and_discard(const Card &upcard)
+	void add_and_discard(const Card &upcard) override
 	{
 		int min_index = 0;
 		hand.push_back(upcard);
@@ -99,7 +101,7 @@ public:
 	// EFFECTS  Leads one Card from Player's hand according to their strategy
 	//   "Lead" means to play the first Card in a trick.  The card
 	//   is removed the player's hand.
-	Card lead_card(Suit trump)
+	Card lead_card(Suit trump) override
 	{
 		int max_index = 0;
 		bool all_trump = true;
@@ -139,12 +141,12 @@ public:
 	// REQUIRES Player has at least one card
 	// EFFECTS  Plays one Card from Player's hand according to their strategy.
 	//   The card is removed from the player's hand.
-	Card play_card(const Card &led_card, Suit trump)
+	Card play_card(const Card &led_card, Suit trump) override
 	{
 		bool follow_suit = false;
 		Suit led_suit = led_card.get_suit();
-		Card highest = hand[0];
-		Card lowest = hand[0];
+		int highest = 0;
+		int lowest = 0;
 		// Check if the player can follow suit
 		for (int i = 0; i < hand.size(); ++i)
 		{
@@ -157,24 +159,26 @@ public:
 		{
 			for (int j = 0; j < hand.size(); ++j)
 			{
-				if (Card_less(highest, hand[j], led_card, trump) &&
+				if (Card_less(hand[highest], hand[j], led_card, trump) &&
 					hand[j].get_suit() == led_suit)
 				{
-					highest = hand[j];
+					highest = j;
 				}
 			}
-			return highest;
+			hand.erase(hand.begin() + highest);
+			return hand[highest];
 		}
 		else
 		{
 			for (int k = 0; k < hand.size(); ++k)
 			{
-				if (Card_less(hand[k], lowest, led_card, trump))
+				if (Card_less(hand[k], hand[lowest], led_card, trump))
 				{
-					lowest = hand[k];
+					lowest = k;
 				}
 			}
-			return lowest;
+			hand.erase(hand.begin() + lowest);
+			return hand[lowest];
 		}
 	}
 
@@ -199,7 +203,7 @@ public:
 
 	// REQUIRES player has less than MAX_HAND_SIZE cards
 	// EFFECTS  adds Card c to Player's hand
-	void add_card(const Card &c)
+	void add_card(const Card &c) override
 	{
 		hand.push_back(c);
 	}
@@ -210,22 +214,31 @@ public:
 	//   change order_up_suit to desired suit.  If Player wishes to pass, then do
 	//   not modify order_up_suit and return false.
 	bool make_trump(const Card &upcard, bool is_dealer,
-					int round, Suit &order_up_suit) const = 0;
+					int round, Suit &order_up_suit) const override
+	{
+	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Player adds one card to hand and removes one card from hand.
-	void add_and_discard(const Card &upcard) = 0;
+	void add_and_discard(const Card &upcard) override
+	{
+		hand.push_back(upcard);
+	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Leads one Card from Player's hand according to their strategy
 	//   "Lead" means to play the first Card in a trick.  The card
 	//   is removed the player's hand.
-	Card lead_card(Suit trump) = 0;
+	Card lead_card(Suit trump) override
+	{
+	}
 
 	// REQUIRES Player has at least one card
 	// EFFECTS  Plays one Card from Player's hand according to their strategy.
 	//   The card is removed from the player's hand.
-	Card play_card(const Card &led_card, Suit trump) = 0;
+	Card play_card(const Card &led_card, Suit trump) override
+	{
+	}
 
 	// Maximum number of cards in a player's hand
 	static const int MAX_HAND_SIZE = 5;
