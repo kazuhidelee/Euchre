@@ -97,7 +97,7 @@ TEST(test_player_make_trump_and_order_up_true)
     Suit trump;
     bool orderup = bob->make_trump(
         nine_spades, // Upcard
-        false,       // Bob is not the dealer
+        true,       // Bob is not the dealer
         2,
         trump // Suit ordered up (if any)
     );
