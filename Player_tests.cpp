@@ -82,7 +82,7 @@ TEST(test_lead_card)
     delete bob;
 }
 
-TEST(test_player_make_trump_and_order_up)
+TEST(test_player_make_trump_and_order_up_true)
 {
     // Bob's hand
     Player *bob = Player_factory("Bob", "Simple");
@@ -112,13 +112,12 @@ TEST(test_player_make_trump_and_order_up)
 TEST(test_play_card_cant_follow_suit)
 {
     // Bob's hand
-    Player * bob = Player_factory("Bob", "Simple");
+    Player *bob = Player_factory("Bob", "Simple");
     bob->add_card(Card(NINE, DIAMONDS));
     bob->add_card(Card(TEN, HEARTS));
     bob->add_card(Card(QUEEN, HEARTS));
     bob->add_card(Card(ACE, HEARTS));
     bob->add_card(Card(JACK, DIAMONDS));
-
 
     Player *rob = Player_factory("Rob", "Simple");
     rob->add_card(Card(NINE, HEARTS));
@@ -127,26 +126,50 @@ TEST(test_play_card_cant_follow_suit)
     rob->add_card(Card(KING, CLUBS));
     rob->add_card(Card(ACE, SPADES));
 
-
     // Bob plays a card
-    Card led_card (JACK, DIAMONDS);
+    Card led_card(JACK, DIAMONDS);
     Card bob_card_played = bob->play_card(
-    led_card,  // Jack of Diamonds is led
-    HEARTS    // Trump suit
+        led_card, // Jack of Diamonds is led
+        HEARTS    // Trump suit
     );
-
 
     Card rob_card_played = rob->play_card(
-    led_card,  // Jack of Diamonds is led
-    HEARTS    // Trump suit
+        led_card, // Jack of Diamonds is led
+        HEARTS    // Trump suit
     );
-
 
     // Verify the card Bob played
     ASSERT_EQUAL(bob_card_played, Card(JACK, DIAMONDS));
     ASSERT_EQUAL(rob_card_played, Card(TEN, SPADES));
     delete bob;
     delete rob;
+}
+
+TEST(test_player_make_trump_and_order_up_false)
+{
+    // Bob's hand
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(JACK, CLUBS));
+    bob->add_card(Card(TEN, DIAMONDS));
+    bob->add_card(Card(NINE, DIAMONDS));
+    bob->add_card(Card(KING, CLUBS));
+    bob->add_card(Card(ACE, CLUBS));
+
+    // Bob makes tump
+    Card nine_dia(JACK, DIAMONDS);
+    Suit trump = SPADES;
+    bool orderup = bob->make_trump(
+        nine_dia, // Upcard
+        false,    // Bob is also the dealer
+        2,        // First round
+        trump     // Suit ordered up (if any)
+    );
+
+    // Verify Bob's order up and trump suit
+    ASSERT_FALSE(orderup);
+    ASSERT_EQUAL(trump, SPADES);
+
+    delete bob;
 }
 
 TEST_MAIN()
