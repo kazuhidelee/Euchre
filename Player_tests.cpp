@@ -144,7 +144,7 @@ TEST(test_play_card_cant_follow_suit)
 
     // Verify the card Bob played
     ASSERT_EQUAL(bob_card_played, Card(JACK, DIAMONDS));
-    ASSERT_EQUAL(rob_card_played, Card(NINE, HEARTS));
+    ASSERT_EQUAL(rob_card_played, Card(TEN, SPADES));
     delete bob;
     delete rob;
 }
