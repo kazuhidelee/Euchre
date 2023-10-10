@@ -97,20 +97,22 @@ TEST(test_player_make_trump_and_order_up_true)
     Suit trump;
     bool orderup = bob->make_trump(
         nine_spades, // Upcard
-        false,       // Bob is also the dealer
+        false,       // Bob is not the dealer
         2,
         trump // Suit ordered up (if any)
     );
 
     // Verify Bob's order up and trump suit
     ASSERT_TRUE(orderup);
-    ASSERT_EQUAL(trump, SPADES);
+    ASSERT_EQUAL(trump, CLUBS); 
+    // consider suit of up card only in first round but in second round not considering it so should be clubs
 
     delete bob;
 }
 
 TEST(test_play_card_cant_follow_suit)
 {
+    //problem with function. should be nine of hearts for rob because left bower is heart
     // Bob's hand
     Player *bob = Player_factory("Bob", "Simple");
     bob->add_card(Card(NINE, DIAMONDS));
@@ -140,7 +142,7 @@ TEST(test_play_card_cant_follow_suit)
 
     // Verify the card Bob played
     ASSERT_EQUAL(bob_card_played, Card(JACK, DIAMONDS));
-    ASSERT_EQUAL(rob_card_played, Card(TEN, SPADES));
+    ASSERT_EQUAL(rob_card_played, Card(NINE, HEARTS));
     delete bob;
     delete rob;
 }
