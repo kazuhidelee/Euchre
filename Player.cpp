@@ -153,7 +153,7 @@ public:
 		// Check if the player can follow suit
 		for (int i = 0; i < hand.size(); ++i)
 		{
-			if (hand[i].get_suit() == led_suit)
+			if (hand[i].get_suit(trump) == led_suit)
 			{
 				follow_suit = true;
 			}
@@ -165,9 +165,9 @@ public:
 		{
 			for (int j = 0; j < hand.size(); ++j)
 			{
-				//does this consider the left bower?? hand[i].is_left_bower()
+				// does this consider the left bower?? hand[i].is_left_bower()
 				if (Card_less(hand[highest], hand[j], led_card, trump) &&
-					hand[j].get_suit() == led_suit)
+					hand[j].get_suit(trump) == led_suit)
 				{
 					highest = j;
 				}

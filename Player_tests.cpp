@@ -24,7 +24,7 @@ TEST(test_make_trump)
 
     // Bob makes trump
     Card nine_spades(NINE, SPADES);
-    Suit trump = SPADES;
+    Suit trump;
     bool orderup = bob->make_trump(
         nine_spades, // Upcard
         true,        // Bob is also the dealer
@@ -97,14 +97,14 @@ TEST(test_player_make_trump_and_order_up_true)
     Suit trump;
     bool orderup = bob->make_trump(
         nine_spades, // Upcard
-        true,       // Bob is not the dealer
+        true,        // Bob is not the dealer
         2,
         trump // Suit ordered up (if any)
     );
 
     // Verify Bob's order up and trump suit
     ASSERT_TRUE(orderup);
-    ASSERT_EQUAL(trump, CLUBS); 
+    ASSERT_EQUAL(trump, CLUBS);
     // consider suit of up card only in first round but in second round not considering it so should be clubs
 
     delete bob;
@@ -112,8 +112,8 @@ TEST(test_player_make_trump_and_order_up_true)
 
 TEST(test_play_card_cant_follow_suit)
 {
-    //problem with function. should be nine of hearts for rob because left bower is heart
-    // Bob's hand
+    // problem with function. should be nine of hearts for rob because left bower is heart
+    //  Bob's hand
     Player *bob = Player_factory("Bob", "Simple");
     bob->add_card(Card(NINE, DIAMONDS));
     bob->add_card(Card(TEN, HEARTS));
@@ -140,9 +140,34 @@ TEST(test_play_card_cant_follow_suit)
         HEARTS    // Trump suit
     );
 
+    Card rob_card_played2 = rob->play_card(
+        led_card, // Jack of Diamonds is led
+        HEARTS    // Trump suit
+    );
+
+    Card rob_card_played3 = rob->play_card(
+        led_card, // Jack of Diamonds is led
+        HEARTS    // Trump suit
+    );
+
+    Card rob_card_played4 = rob->play_card(
+        led_card, // Jack of Diamonds is led
+        HEARTS    // Trump suit
+    );
+
+    Card rob_card_played5 = rob->play_card(
+        led_card, // Jack of Diamonds is led
+        HEARTS    // Trump suit
+    );
+
     // Verify the card Bob played
     ASSERT_EQUAL(bob_card_played, Card(JACK, HEARTS));
     ASSERT_EQUAL(rob_card_played, Card(NINE, HEARTS));
+    ASSERT_EQUAL(rob_card_played2, Card(TEN, SPADES));
+    ASSERT_EQUAL(rob_card_played3, Card(QUEEN, CLUBS));
+    ASSERT_EQUAL(rob_card_played4, Card(KING, CLUBS));
+    ASSERT_EQUAL(rob_card_played5, Card(ACE, SPADES));
+
     delete bob;
     delete rob;
 }
@@ -186,12 +211,132 @@ TEST(test_player_card2)
     // discard NINE of HEARTS, add NINE of SPADES
     bob->add_and_discard(Card(NINE, CLUBS));
     // discard NINE of SPADES, add NINE of CLUBS
-    bob->add_and_discard(Card(NINE, CLUBS));
 
     Card played1 = bob->play_card(Card(ACE, HEARTS), CLUBS);
-    ASSERT_EQUAL(Card(NINE, SPADES), played1);
+    ASSERT_EQUAL(Card(TEN, SPADES), played1);
     Card played2 = bob->play_card(Card(JACK, SPADES), SPADES);
     ASSERT_EQUAL(Card(ACE, SPADES), played2);
+
+    delete bob;
+}
+
+TEST(test_screw_the_dealer)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(NINE, HEARTS));
+    bob->add_card(Card(TEN, CLUBS));
+    bob->add_card(Card(QUEEN, CLUBS));
+    bob->add_card(Card(KING, DIAMONDS));
+    bob->add_card(Card(ACE, CLUBS));
+
+    // Bob makes trump
+    Card nine_spades(NINE, SPADES);
+    Suit trump;
+    bool orderup = bob->make_trump(
+        nine_spades, // Upcard
+        true,        // Bob is also the dealer
+        2,           // First round
+        trump        // Suit ordered up (if any)
+    );
+
+    // Verify Bob's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, CLUBS);
+
+    delete bob;
+}
+
+TEST(test_dont_pick_up_trump)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(JACK, HEARTS));
+    bob->add_card(Card(TEN, CLUBS));
+    bob->add_card(Card(QUEEN, CLUBS));
+    bob->add_card(Card(KING, SPADES));
+    bob->add_card(Card(ACE, CLUBS));
+
+    // Bob makes trump
+    Card nine_spades(NINE, DIAMONDS);
+    Suit trump = SPADES;
+    bool orderup = bob->make_trump(
+        nine_spades, // Upcard
+        true,        // Bob is also the dealer
+        1,           // First round
+        trump        // Suit ordered up (if any)
+    );
+
+    // Verify Bob's order up and trump suit
+    ASSERT_FALSE(orderup);
+    ASSERT_EQUAL(trump, SPADES);
+
+    delete bob;
+}
+
+TEST(test_pick_up_trump)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(JACK, HEARTS));
+    bob->add_card(Card(JACK, CLUBS));
+    bob->add_card(Card(QUEEN, CLUBS));
+    bob->add_card(Card(JACK, SPADES));
+    bob->add_card(Card(ACE, CLUBS));
+
+    // Bob makes trump
+    Card nine_spades(NINE, SPADES);
+    Suit trump;
+    bool orderup = bob->make_trump(
+        nine_spades, // Upcard
+        true,        // Bob is also the dealer
+        1,           // First round
+        trump        // Suit ordered up (if any)
+    );
+
+    // Verify Bob's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, SPADES);
+
+    delete bob;
+}
+
+TEST(one_card)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(JACK, SPADES));
+    Card played1 = bob->play_card(Card(ACE, DIAMONDS), CLUBS);
+    ASSERT_EQUAL(Card(JACK, SPADES), played1);
+
+    delete bob;
+}
+
+TEST(two_cards)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(JACK, CLUBS));
+    bob->add_card(Card(KING, SPADES));
+    Card played1 = bob->play_card(Card(JACK, SPADES), CLUBS);
+    ASSERT_EQUAL(Card(JACK, CLUBS), played1);
+
+    delete bob;
+}
+
+TEST(test_not_follow_suit)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(ACE, HEARTS));
+    bob->add_card(Card(KING, SPADES));
+    Card played1 = bob->play_card(Card(JACK, SPADES), CLUBS);
+    ASSERT_EQUAL(Card(KING, SPADES), played1);
+
+    delete bob;
+}
+
+TEST(test_not_follow_suit2)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(JACK, HEARTS));
+    bob->add_card(Card(KING, SPADES));
+    Card played1 = bob->play_card(Card(ACE, HEARTS), DIAMONDS);
+    ASSERT_EQUAL(Card(KING, SPADES), played1);
 
     delete bob;
 }
