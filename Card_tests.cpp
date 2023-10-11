@@ -292,4 +292,11 @@ TEST(test_card_less_with_led)
     ASSERT_TRUE(Card_less(d, e, led_card1, SPADES));
 }
 
+TEST(test_2)
+{
+    Card a(TEN, SPADES);
+    Card b(NINE, HEARTS);
+    ASSERT_TRUE(b < a);
+}
+
 TEST_MAIN()

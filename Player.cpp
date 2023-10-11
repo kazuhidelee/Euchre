@@ -147,7 +147,7 @@ public:
 	Card play_card(const Card &led_card, Suit trump) override
 	{
 		bool follow_suit = false;
-		Suit led_suit = led_card.get_suit();
+		Suit led_suit = led_card.get_suit(trump);
 		int highest = 0;
 		int lowest = 0;
 		// Check if the player can follow suit
@@ -158,6 +158,9 @@ public:
 				follow_suit = true;
 			}
 		}
+		cout << led_suit << endl;
+		// cout << follow_suit << endl;
+
 		if (follow_suit)
 		{
 			for (int j = 0; j < hand.size(); ++j)
@@ -169,6 +172,7 @@ public:
 				}
 			}
 			Card most = hand[highest];
+			// cout << most << endl;
 			hand.erase(hand.begin() + highest);
 			return most;
 		}
@@ -176,12 +180,13 @@ public:
 		{
 			for (int k = 0; k < hand.size(); ++k)
 			{
-				if (Card_less(hand[k], hand[lowest], trump))
+				if (Card_less(hand[k], hand[lowest], led_card, trump))
 				{
 					lowest = k;
 				}
 			}
 			Card least = hand[lowest];
+			cout << lowest << " " << least << endl;
 			hand.erase(hand.begin() + lowest);
 			return least;
 		}
