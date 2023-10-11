@@ -341,4 +341,23 @@ TEST(test_not_follow_suit2)
     delete bob;
 }
 
+TEST(test_add_and_discard)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(NINE, HEARTS));
+    bob->add_and_discard(Card(TEN, HEARTS));
+    // add ten of hearts and discard nine of hearts
+    Card played1 = bob->play_card(Card(ACE, HEARTS), DIAMONDS);
+    // play ten of hearts
+    ASSERT_EQUAL(played1, Card(TEN, HEARTS));
+    bob->add_card(Card(TEN, HEARTS));
+    bob->add_and_discard(Card(NINE, HEARTS));
+    // discard nine of hearts and add ten of hearts
+    Card played2 = bob->play_card(Card(ACE, HEARTS), DIAMONDS);
+    // play ten of hearts
+    ASSERT_EQUAL(played2, Card(TEN, HEARTS));
+
+    delete bob;
+}
+
 TEST_MAIN()

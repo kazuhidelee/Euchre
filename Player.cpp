@@ -158,8 +158,8 @@ public:
 				follow_suit = true;
 			}
 		}
-		cout << led_suit << endl;
-		// cout << follow_suit << endl;
+		// cout << led_suit << endl;
+		//  cout << follow_suit << endl;
 
 		if (follow_suit)
 		{
@@ -187,7 +187,7 @@ public:
 				}
 			}
 			Card least = hand[lowest];
-			cout << lowest << " " << least << endl;
+			// cout << lowest << " " << least << endl;
 			hand.erase(hand.begin() + lowest);
 			return least;
 		}
