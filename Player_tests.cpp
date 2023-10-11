@@ -39,6 +39,32 @@ TEST(test_make_trump)
     delete bob;
 }
 
+TEST(test_make_trump2)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(NINE, HEARTS));
+    bob->add_card(Card(TEN, SPADES));
+    bob->add_card(Card(QUEEN, CLUBS));
+    bob->add_card(Card(KING, DIAMONDS));
+    bob->add_card(Card(ACE, SPADES));
+
+    // Bob makes trump
+    Card nine_spades(NINE, SPADES);
+    Suit trump;
+    bool orderup = bob->make_trump(
+        nine_spades, // Upcard
+        false,        // Bob is also the dealer
+        2,           // First round
+        trump        // Suit ordered up (if any)
+    );
+
+    // Verify Bob's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, CLUBS);
+
+    delete bob;
+}
+
 TEST(test_player_card)
 {
     Player *bob = Player_factory("Bob", "Simple");
@@ -357,6 +383,23 @@ TEST(test_add_and_discard)
     // play ten of hearts
     ASSERT_EQUAL(played2, Card(TEN, HEARTS));
 
+    delete bob;
+}
+
+TEST(test_add_and_discard_2)
+{
+    Player *bob = Player_factory("Bob", "Simple");
+    bob->add_card(Card(NINE, HEARTS));
+    bob->add_card(Card(JACK, HEARTS));
+    bob->add_card(Card(QUEEN, CLUBS));
+    bob->add_card(Card(JACK, SPADES));
+    bob->add_card(Card(ACE, CLUBS));
+    bob->add_and_discard(Card(TEN, HEARTS));
+    // add ten of hearts and discard jack of spades
+    Card played1 = bob->play_card(Card(ACE, SPADES), HEARTS);
+    
+    ASSERT_EQUAL(played1, Card(QUEEN, CLUBS));
+    
     delete bob;
 }
 

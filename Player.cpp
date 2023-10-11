@@ -38,8 +38,7 @@ public:
 		{
 			for (int i = 0; i < hand.size(); ++i)
 			{
-				if (hand[i].is_left_bower(up_suit) || hand[i].is_right_bower(up_suit) ||
-					(hand[i].is_face_or_ace() && hand[i].is_trump(up_suit)))
+				if ((hand[i].is_face_or_ace() && hand[i].is_trump(up_suit)))
 				{
 					card_count += 1;
 				}
@@ -58,8 +57,7 @@ public:
 		{
 			for (int i = 0; i < hand.size(); ++i)
 			{
-				if (hand[i].is_left_bower(up_suit) || hand[i].is_right_bower(up_suit) ||
-					(hand[i].is_face_or_ace() && hand[i].is_trump(up_suit)))
+				if ((hand[i].is_face_or_ace() && hand[i].is_trump(up_suit)))
 				{
 					card_count += 1;
 				}
@@ -67,7 +65,7 @@ public:
 			if (card_count >= 1)
 			{
 				// cout << card_count;
-				order_up_suit = up_suit;
+				order_up_suit = Suit_next(up_suit);
 				return true;
 			}
 			else
@@ -94,6 +92,7 @@ public:
 		{
 			if (Card_less(hand[i], hand[min_index], upsuit))
 			{
+				cout << hand[i] << " is less than " << hand[min_index] << endl;
 				min_index = i;
 			}
 		}
