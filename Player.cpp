@@ -165,6 +165,7 @@ public:
 		{
 			for (int j = 0; j < hand.size(); ++j)
 			{
+				//does this consider the left bower?? hand[i].is_left_bower()
 				if (Card_less(hand[highest], hand[j], led_card, trump) &&
 					hand[j].get_suit() == led_suit)
 				{
