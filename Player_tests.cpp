@@ -117,9 +117,9 @@ TEST(test_play_card_cant_follow_suit)
     Player *bob = Player_factory("Bob", "Simple");
     bob->add_card(Card(NINE, DIAMONDS));
     bob->add_card(Card(TEN, HEARTS));
-    bob->add_card(Card(QUEEN, HEARTS));
-    bob->add_card(Card(ACE, HEARTS));
-    bob->add_card(Card(JACK, DIAMONDS));
+    bob->add_card(Card(QUEEN, CLUBS));
+    bob->add_card(Card(ACE, SPADES));
+    bob->add_card(Card(JACK, HEARTS));
 
     Player *rob = Player_factory("Rob", "Simple");
     rob->add_card(Card(NINE, HEARTS));
@@ -141,7 +141,7 @@ TEST(test_play_card_cant_follow_suit)
     );
 
     // Verify the card Bob played
-    ASSERT_EQUAL(bob_card_played, Card(JACK, DIAMONDS));
+    ASSERT_EQUAL(bob_card_played, Card(JACK, HEARTS));
     ASSERT_EQUAL(rob_card_played, Card(NINE, HEARTS));
     delete bob;
     delete rob;
