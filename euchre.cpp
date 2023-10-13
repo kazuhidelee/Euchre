@@ -54,14 +54,21 @@ private:
         cout << upcard << "turned up" << endl;
     }
 
-    void decisions(string name1, string decision1, string name2, string decision2,
-                   string name3, string decision3, string name4, string decision4)
+    void print_decisions(string name, string decision)
     {
-        cout << name1 << " " << decision1 << endl;
-        cout << name2 << " " << decision2 << endl;
-        cout << name3 << " " << decision3 << endl;
-        cout << name4 << " " << decision4 << endl;
+        cout << name << " " << decision << endl;
     }
+
+    void print_decisions(string name, Suit up_suit)
+    {
+        cout << name << " "
+             << "orders up" << up_suit << endl;
+    }
+
+    void print_cards_played()
+    {
+    }
+
     void shuffle();
     void deal(/* ... */);
     void make_trump(/* ... */);
