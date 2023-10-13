@@ -9,6 +9,23 @@
 #include "Player.hpp"
 using namespace std;
 
+class Game
+{
+public:
+    Game(/* game details */);
+    void play();
+
+private:
+    std::vector<Player *> players;
+    Pack pack;
+    // ...
+    void shuffle();
+    void deal(/* ... */);
+    void make_trump(/* ... */);
+    void play_hand(/* ... */);
+    // ...
+};
+
 int main(int argc, char *argv[])
 {
     // checks for 12 arguments
