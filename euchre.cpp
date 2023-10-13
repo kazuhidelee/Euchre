@@ -9,6 +9,21 @@
 #include "Player.hpp"
 using namespace std;
 
+// 1. First, print the executable and all arguments on the first line.
+//     Print a single space at the end, which makes it easier to print an array.
+// 2. At the beginning of each hand, announce the hand, starting at zero,
+//     followed by the dealer and the upcard.
+// 3. Print the decision of each player during the making procedure.
+//     Print an extra newline when making, adding, and discarding is complete.
+// 4. Each of the five tricks is announced, including the lead, cards played and the player that took the trick.
+//     Print an extra newline at the end of each trick.
+// 5. At the end of the hand, print the winners of the hand. When printing the names of a partnership,
+//     print the player with the lower index first.
+// 6. If a march occurs, print march! followed by a newline. If euchre occurs,
+//     print euchred! followed by a newline. If neither occurs, print nothing.
+// 7. Print the score, followed by an extra newline.
+// 8. When the game is over, print the winners of the game.
+
 class Game
 {
 public:
@@ -19,6 +34,34 @@ private:
     std::vector<Player *> players;
     Pack pack;
     // ...
+    void print_command_line(string exe, string pack_filename, string shuffle_decision,
+                            int points_to_win, string player_name_1, string player_type_1,
+                            string player_name_2, string player_type_2, string player_name_3, string player_type_3,
+                            string player_name_4, string player_type_4)
+    {
+        cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
+             << " " << player_name_1 << " " << player_type_1 << " " << player_name_2 << " "
+             << player_type_2 << " " << player_name_3 << " " << player_type_3 << " "
+             << player_name_3 << " " << player_type_3 << endl;
+    }
+
+    void annoucement(int hand, string dealer, Card upcard)
+    {
+        cout << "Hand"
+             << " " << hand << endl;
+        cout << dealer << " "
+             << "deals" << endl;
+        cout << upcard << "turned up" << endl;
+    }
+
+    void decisions(string name1, string decision1, string name2, string decision2,
+                   string name3, string decision3, string name4, string decision4)
+    {
+        cout << name1 << " " << decision1 << endl;
+        cout << name2 << " " << decision2 << endl;
+        cout << name3 << " " << decision3 << endl;
+        cout << name4 << " " << decision4 << endl;
+    }
     void shuffle();
     void deal(/* ... */);
     void make_trump(/* ... */);
@@ -37,6 +80,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    string exe = argv[0];
     string pack_filename = argv[1];
     string shuffle_decision = argv[2];
     int points_to_win = atoi(argv[3]);
