@@ -113,18 +113,18 @@ private:
 
     void deal(vector<Player *> players, Pack pack, Card &upcard, int round)
     {
-        //Player *dealer = players[round % 4];
+        // Player *dealer = players[round % 4];
         pack.shuffle();
         for (int i = 1; i < players.size() + 1; ++i)
         {
-            //deals for player left of dealer & their teammate
+            // deals for player left of dealer & their teammate
             if (i % 2 != 0)
             {
                 players[round % 4 + i]->add_card(pack.deal_one());
                 players[round % 4 + i]->add_card(pack.deal_one());
                 players[round % 4 + i]->add_card(pack.deal_one());
             }
-            //deals for dealer & their teammate
+            // deals for dealer & their teammate
             else
             {
                 players[round % 4 + i]->add_card(pack.deal_one());
@@ -135,63 +135,99 @@ private:
         upcard = pack.deal_one();
     }
 
-    bool making_trump(vector<Player *> players, Card &upcard, int round) 
-    {   
-        //Player *dealer = players[round % 4];
-        Suit order_up_suit = upcard.get_suit();
+    bool making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit)
+    {
+
         for (int i = 1; i < players.size() + 1; ++i)
         {
-            //player left of dealer & their teammate making trump
+            // player left of dealer & their teammate making trump
             if (i % 2 != 0)
             {
                 bool order_up = players[round % 4 + i]->make_trump(
                     upcard, false, round, order_up_suit);
-                if (order_up) 
+                if (order_up)
                 {
                     return true;
                 }
-                else 
+                else
                 {
                     return false;
                 }
-            } 
+            }
             else if (i % 2 == 0)
             {
-                //dealer's teammate making trump
+                // dealer's teammate making trump
                 if (i == 2)
-                { 
+                {
                     bool order_up = players[round % 4 + i]->make_trump(
-                        upcard, false, round, order_up_suit);   
-                    if (order_up) 
+                        upcard, false, round, order_up_suit);
+                    if (order_up)
                     {
                         return true;
                     }
-                    else 
+                    else
                     {
                         return false;
                     }
                 }
-                //dealer making trump
-                else 
+                // dealer making trump
+                else
                 {
                     bool order_up = players[round % 4 + i]->make_trump(
                         upcard, true, round, order_up_suit);
-                    if (order_up) 
+                    if (order_up)
                     {
                         return true;
                     }
-                    else 
+                    else
                     {
                         return false;
                     }
-
                 }
             }
         }
     }
 
-    void play_trick(vector<Player *> player, Card upcard, Suit trump)
+    void play_trick(vector<Player *> player, int round, Suit trump)
     {
+        // make a vector of cards that player have played
+        vector<Card> cards_played;
+        // the person to the left of dealer leads the card, and let the card let be led_card
+        Card led_card = players[round % 4 + 1]->lead_card(trump);
+        // first card played is the led card
+        cards_played.push_back(led_card);
+        cout << led_card << " led by " << players[round % 4 + 1]->get_name() << endl;
+        for (int i = 2; i < player.size(); ++i)
+        {
+            if (i < player.size())
+            {
+                // not sure about the indexing tbh
+                cards_played.push_back(player[round % 4 + i]->play_card(led_card, trump));
+            }
+            else
+            {
+                cards_played.push_back(player[round % 4]->play_card(led_card, trump));
+            }
+        }
+        // get index of the biggest card in this round/trick
+        int max_index = 0;
+        for (int j = 0; j < cards_played.size(); ++j)
+        {
+            if (Card_less(cards_played[max_index], cards_played[j], trump))
+            {
+                max_index = j;
+            }
+        }
+        if ((round % 4 + 1 + max_index) < players.size())
+        {
+            cout << players[round % 4 + 1 + max_index]->get_name() << " takes the trick " << endl;
+        }
+        else
+        {
+            cout << players[round % 4 + 1 + max_index]->get_name() << " takes the trick " << endl;
+        }
+        // INDEX: dealer = 4, lead = 0, lead+1  = 1, lead+2 = 2
+        // have to keep track of score after this...
     }
 };
 
