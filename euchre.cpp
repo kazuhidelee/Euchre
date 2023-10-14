@@ -16,37 +16,37 @@ public:
     Game(vector<Player *> players_in)
         : players(players_in){};
 
-    void play()
-    {
-        for (int i = 0; i < players.size(); ++i)
-        {
-            Player_factory(players[i]->get_name(), players[i]->get_type());
-        }
-        Player *zero = Player_factory("Bob", "Simple");
-        Player *one = Player_factory("Bob", "Simple");
-        Player *two = Player_factory("Bob", "Simple");
-        Player *three = Player_factory("Bob", "Simple");
-        // print command line
-        // decide dealer, upcard
+    // void play()
+    // {
+    //     // for (int i = 0; i < players.size(); ++i)
+    //     // {
+    //     //     Player_factory(players[i]->get_name(), players[i]->get_type());
+    //     // }
+    //     Player *zero = Player_factory("Bob", "Simple");
+    //     Player *one = Player_factory("Bob", "Simple");
+    //     Player *two = Player_factory("Bob", "Simple");
+    //     Player *three = Player_factory("Bob", "Simple");
+    //     // print command line
+    //     // decide dealer, upcard
 
-        // print dealer and upcard
+    //     // print dealer and upcard
 
-        // print hand and ask pass or pick up suit(make trump)
+    //     // print hand and ask pass or pick up suit(make trump)
 
-        // print decision
+    //     // print decision
 
-        // ask dealer to make trump or no?
+    //     // ask dealer to make trump or no?
 
-        // print led and played cards
+    //     // print led and played cards
 
-        // print winner for the trink
+    //     // print winner for the trink
 
-        // print winnte for the round
+    //     // print winnte for the round
 
-        // keep going...
+    //     // keep going...
 
-        // announce winner
-    };
+    //     // announce winner
+    // };
 
 private:
     Player *player;
@@ -113,20 +113,79 @@ private:
 
     void deal(vector<Player *> players, Pack pack, Card &upcard, int round)
     {
-        Player *dealer = players[round % 4];
+        //Player *dealer = players[round % 4];
         pack.shuffle();
-        for (int i = 1; i < players.size() - 1; ++i)
+        for (int i = 1; i < players.size() + 1; ++i)
         {
+            //deals for player left of dealer & their teammate
             if (i % 2 != 0)
             {
-                players[round % 4 + i]->add_card(pack.cards[i]);
-                players[round % 4 + i]->add_card(pack.cards[i]);
-                players[round % 4 + i]->add_card(pack.cards[i]);
+                players[round % 4 + i]->add_card(pack.deal_one());
+                players[round % 4 + i]->add_card(pack.deal_one());
+                players[round % 4 + i]->add_card(pack.deal_one());
             }
+            //deals for dealer & their teammate
             else
             {
-                players[round % 4 + i]->add_card(pack.cards[i]);
-                players[round % 4 + i]->add_card(pack.cards[i]);
+                players[round % 4 + i]->add_card(pack.deal_one());
+                players[round % 4 + i]->add_card(pack.deal_one());
+            }
+        }
+
+        upcard = pack.deal_one();
+    }
+
+    bool making_trump(vector<Player *> players, Card &upcard, int round) 
+    {   
+        //Player *dealer = players[round % 4];
+        Suit order_up_suit = upcard.get_suit();
+        for (int i = 1; i < players.size() + 1; ++i)
+        {
+            //player left of dealer & their teammate making trump
+            if (i % 2 != 0)
+            {
+                bool order_up = players[round % 4 + i]->make_trump(
+                    upcard, false, round, order_up_suit);
+                if (order_up) 
+                {
+                    return true;
+                }
+                else 
+                {
+                    return false;
+                }
+            } 
+            else if (i % 2 == 0)
+            {
+                //dealer's teammate making trump
+                if (i == 2)
+                { 
+                    bool order_up = players[round % 4 + i]->make_trump(
+                        upcard, false, round, order_up_suit);   
+                    if (order_up) 
+                    {
+                        return true;
+                    }
+                    else 
+                    {
+                        return false;
+                    }
+                }
+                //dealer making trump
+                else 
+                {
+                    bool order_up = players[round % 4 + i]->make_trump(
+                        upcard, true, round, order_up_suit);
+                    if (order_up) 
+                    {
+                        return true;
+                    }
+                    else 
+                    {
+                        return false;
+                    }
+
+                }
             }
         }
     }
