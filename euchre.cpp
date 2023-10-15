@@ -13,8 +13,18 @@ using namespace std;
 class Game
 {
 public:
-    Game(vector<Player *> players_in)
-        : players(players_in){};
+    Game(char *argv[])
+        : pack_file(argv[1]), shuffle_decision(argv[2]), points(atoi(argv[3]))
+    {
+        // player 0 = [4],[5];
+        // player 1 = [6],[7];
+        // player 2 = [8],[9];
+        // player 3 = [10],[11];
+        for (int i = 0; i <= 6; i += 2)
+        {
+            players.push_back(Player_factory(argv[4 + i], argv[4 + i + 1]));
+        }
+    };
 
     // void play()
     // {
@@ -49,6 +59,9 @@ public:
     // };
 
 private:
+    int points;
+    string shuffle_decision;
+    string pack_file;
     Player *player;
     std::vector<Player *> players;
     Pack pack;
@@ -111,7 +124,7 @@ private:
              << "have " << score2 << " points" << endl;
     }
 
-    void deal(vector<Player *> players, Pack pack, Card &upcard, int round)
+    void deal(Pack pack, Card &upcard, int round)
     {
         // Player *dealer = players[round % 4];
         pack.shuffle();
@@ -135,9 +148,8 @@ private:
         upcard = pack.deal_one();
     }
 
-    bool making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit)
+    bool making_trump(Card &upcard, int round, Suit &order_up_suit)
     {
-
         for (int i = 1; i < players.size() + 1; ++i)
         {
             // player left of dealer & their teammate making trump
