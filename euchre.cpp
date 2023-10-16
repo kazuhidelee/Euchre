@@ -166,35 +166,73 @@ private:
 
     void making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit)
     {
+        int make_round = 1;
+        bool order_up = false;
         for (int i = 1; i < players.size() + 1; ++i)
         {
             // player left of dealer & their teammate making trump
             // cicle 1:
             if (i % 2 != 0)
             {
-                bool order_up = players[(round % 4 + i) % 4]->make_trump(
-                    upcard, false, round, order_up_suit);
+                order_up = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, false, make_round, order_up_suit);
                 // print message
                 print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                // return order_up;
+                if (order_up)
+                    return;
             }
             else if (i % 2 == 0)
             {
                 // dealer's teammate making trump
                 if (i == 2)
                 {
-                    bool order_up = players[(round % 4 + i) % 4]->make_trump(
-                        upcard, false, round, order_up_suit);
+                    order_up = players[(round % 4 + i) % 4]->make_trump(
+                        upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                    // return order_up;
+                    if (order_up)
+                        return;
                 }
                 // dealer making trump
                 else
                 {
-                    bool order_up = players[(round % 4 + i) % 4]->make_trump(
-                        upcard, true, round, order_up_suit);
+                    order_up = players[(round % 4 + i) % 4]->make_trump(
+                        upcard, true, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                    // return order_up;
+                    if (order_up)
+                        return;
+                }
+            }
+        }
+        // if no one orders up during the first round, go another round
+        if (!order_up)
+            make_round++;
+        for (int i = 1; i < players.size() + 1; ++i)
+        {
+            if (i % 2 != 0)
+            {
+                order_up = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, false, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
+                if (order_up)
+                    return;
+            }
+            else if (i % 2 == 0)
+            {
+                if (i == 2)
+                {
+                    order_up = players[(round % 4 + i) % 4]->make_trump(
+                        upcard, false, make_round, order_up_suit);
+                    print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
+                    if (order_up)
+                        return;
+                }
+                else
+                {
+                    order_up = players[(round % 4 + i) % 4]->make_trump(
+                        upcard, true, make_round, order_up_suit);
+                    print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
+                    if (order_up)
+                        return;
                 }
             }
         }
