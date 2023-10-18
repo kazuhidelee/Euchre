@@ -36,15 +36,17 @@ public:
         Suit order_up_suit;
 
         // print command line
-
+        while (team1_score < points && team2_score < points)
         // shuffle the deck if user wants to
-        suffle(decision);
-        // start dealing
-        deal(players, pack, upcard, round);
-        // determine the trump suit...
-        making_trump(players, upcard, round, order_up_suit);
-        // start playing...
-        play_trick(players, round, order_up_suit);
+        {
+            suffle(decision);
+            // start dealing
+            deal(players, pack, upcard, round);
+            // determine the trump suit...
+            making_trump(players, upcard, round, order_up_suit);
+            // start playing...
+            play_trick(players, round, order_up_suit);
+        }
 
         // after this is round 2
 
