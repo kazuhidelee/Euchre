@@ -30,6 +30,8 @@ public:
     {
         // initializing...
         int round = 1;
+        int team1_score = 0;
+        int team2_score = 0;
         Card upcard;
         Suit order_up_suit;
 
