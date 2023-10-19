@@ -10,6 +10,10 @@
 #include "Player.cpp"
 using namespace std;
 
+// NEED TO DO:
+//  1. keeping track of scores of each team
+//  2. determing which player is in which team?,
+//  3. tell if the team euchred or marched
 class Game
 {
 public:
@@ -28,6 +32,10 @@ public:
 
     void play()
     {
+        // reading pack from file..
+        ifstream ifs(pack_file);
+        assert(ifs.is_open());
+        Pack pack(ifs);
         // initializing...
         int round = 1;
         int team1_score = 0;
