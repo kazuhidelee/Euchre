@@ -168,7 +168,7 @@ private:
         upcard = pack.deal_one();
     }
 
-    void making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit)
+    bool making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit)
     {
         int make_round = 1;
         bool order_up = false;
@@ -183,7 +183,7 @@ private:
                 // print message
                 print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                 if (order_up)
-                    return;
+                    return true;
             }
             else if (i % 2 == 0)
             {
@@ -194,7 +194,7 @@ private:
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return;
+                        return true;
                 }
                 // dealer making trump
                 else
@@ -203,7 +203,7 @@ private:
                         upcard, true, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return;
+                        return true;
                 }
             }
         }
@@ -218,7 +218,7 @@ private:
                     upcard, false, make_round, order_up_suit);
                 print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                 if (order_up)
-                    return;
+                    return true;
             }
             else if (i % 2 == 0)
             {
@@ -228,7 +228,7 @@ private:
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return;
+                        return true;
                 }
                 else
                 {
@@ -236,7 +236,7 @@ private:
                         upcard, true, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return;
+                        return true;
                 }
             }
         }
@@ -272,6 +272,8 @@ private:
         // INDEX: dealer = 4, lead = 0, lead+1  = 1, lead+2 = 2
         // have to keep track of score after this...
     }
+
+    bool is_march_or_euchred();
 };
 
 // 1. First, print the executable and all arguments on the first line.
