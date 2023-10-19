@@ -62,9 +62,9 @@ public:
     };
 
 private:
-    int points;
-    string decision;
     string pack_file;
+    string decision;
+    int points;
     // Player *player;
     std::vector<Player *> players;
     Pack pack;
