@@ -282,6 +282,7 @@ private:
     }
 
     bool is_march_or_euchred();
+    int which_team();
 };
 
 // 1. First, print the executable and all arguments on the first line.
