@@ -11,7 +11,7 @@ class SimplePlayer : public Player
 {
 public:
 	SimplePlayer(const string &name_input)
-		: type("Simple"), name(name_input) {}
+		: name(name_input) {}
 	// EFFECTS returns player's name
 	const std::string &get_name() const override
 	{
@@ -195,7 +195,6 @@ public:
 	// Needed to avoid some compiler errors
 	//~Player() {}
 private:
-	string type;
 	string name;
 	vector<Card> hand;
 };
@@ -204,7 +203,7 @@ class HumanPlayer : public Player
 {
 public:
 	HumanPlayer(const string &name_input)
-		: type("Human"), name(name_input) {}
+		: name(name_input) {}
 	// EFFECTS returns player's name
 
 	const std::string &get_name() const override
@@ -301,7 +300,6 @@ public:
 	// Needed to avoid some compiler errors
 	//~Player() {}
 private:
-	string type;
 	string name;
 	vector<Card> hand;
 	void print_hand() const
