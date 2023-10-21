@@ -56,12 +56,14 @@ public:
             deal(players, pack, upcard, round);
             // determine the trump suit...
             making_trump(players, upcard, round, order_up_suit, team1_trump, team2_trump);
-            // start playing...
+            // start playing... //total of 5 tricks
             for (int i = 0; i <= 5; ++i)
             {
                 play_trick(players, round, order_up_suit, team1_trick, team2_trick);
             }
             // KEEP TRACK OF ROUND SCORE (euchred or marched)
+            is_march_or_euchred(team1_trump, team1_trick, team1_score);
+            is_march_or_euchred(team2_trump, team2_trick, team2_score);
             round++;
         }
 
@@ -351,17 +353,23 @@ private:
         // INDEX: dealer = 4, lead = 0, lead+1  = 1, lead+2 = 2
         // have to keep track of score after this...
     }
-    int is_march_or_euchred(bool trump, int trick_took, int &score)
+    void is_march_or_euchred(bool trump, int trick_took, int &score)
     {
         if (score == 5)
         {
+            score += 2;
             // MARCH
         }
-        if (!trump && trick_took >= 3)
+        else if (!trump && trick_took >= 3)
         {
             // EUCHRED
+            score += 2;
         }
-    };
+        else if (trick_took >= 3)
+        {
+            score += 1;
+        }
+    }
 };
 
 // 1. First, print the executable and all arguments on the first line.
