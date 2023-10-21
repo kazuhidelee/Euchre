@@ -40,6 +40,10 @@ public:
         int round = 1;
         int team1_score = 0;
         int team2_score = 0;
+        int team1_trick = 0;
+        int team2_trick = 0;
+        bool team1_trump = false;
+        bool team2_trump = false;
         Card upcard;
         Suit order_up_suit;
 
@@ -51,9 +55,14 @@ public:
             // start dealing
             deal(players, pack, upcard, round);
             // determine the trump suit...
-            making_trump(players, upcard, round, order_up_suit);
+            making_trump(players, upcard, round, order_up_suit, team1_trump, team2_trump);
             // start playing...
-            play_trick(players, round, order_up_suit);
+            for (int i = 0; i <= 5; ++i)
+            {
+                play_trick(players, round, order_up_suit, team1_trick, team2_trick);
+            }
+            // KEEP TRACK OF ROUND SCORE (euchred or marched)
+            round++;
         }
 
         // after this is round 2
@@ -176,7 +185,7 @@ private:
         upcard = pack.deal_one();
     }
 
-    bool making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit)
+    void making_trump(vector<Player *> players, Card &upcard, int round, Suit &order_up_suit, bool &team1_trump, bool &team2_trump)
     {
         int make_round = 1;
         bool order_up = false;
@@ -191,7 +200,16 @@ private:
                 // print message
                 print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                 if (order_up)
-                    return true;
+                {
+                    if (((round % 4 + i) % 4) % 2 == 0)
+                    {
+                        team1_trump = true;
+                    }
+                    else
+                    {
+                        team2_trump = true;
+                    }
+                }
             }
             else if (i % 2 == 0)
             {
@@ -202,7 +220,16 @@ private:
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return true;
+                    {
+                        if (((round % 4 + i) % 4) % 2 == 0)
+                        {
+                            team1_trump = true;
+                        }
+                        else
+                        {
+                            team2_trump = true;
+                        }
+                    }
                 }
                 // dealer making trump
                 else
@@ -211,7 +238,16 @@ private:
                         upcard, true, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return true;
+                    {
+                        if (((round % 4 + i) % 4) % 2 == 0)
+                        {
+                            team1_trump = true;
+                        }
+                        else
+                        {
+                            team2_trump = true;
+                        }
+                    }
                 }
             }
         }
@@ -225,8 +261,18 @@ private:
                 order_up = players[(round % 4 + i) % 4]->make_trump(
                     upcard, false, make_round, order_up_suit);
                 print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
+
                 if (order_up)
-                    return true;
+                {
+                    if (((round % 4 + i) % 4) % 2 == 0)
+                    {
+                        team1_trump = true;
+                    }
+                    else
+                    {
+                        team2_trump = true;
+                    }
+                }
             }
             else if (i % 2 == 0)
             {
@@ -236,7 +282,16 @@ private:
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return true;
+                    {
+                        if (((round % 4 + i) % 4) % 2 == 0)
+                        {
+                            team1_trump = true;
+                        }
+                        else
+                        {
+                            team2_trump = true;
+                        }
+                    }
                 }
                 else
                 {
@@ -244,13 +299,22 @@ private:
                         upcard, true, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
                     if (order_up)
-                        return true;
+                    {
+                        if (((round % 4 + i) % 4) % 2 == 0)
+                        {
+                            team1_trump = true;
+                        }
+                        else
+                        {
+                            team2_trump = true;
+                        }
+                    }
                 }
             }
         }
     }
 
-    void play_trick(vector<Player *> players, int &round, Suit trump)
+    void play_trick(vector<Player *> players, int &round, Suit trump, int &team1_trick, int &team2_trick)
     {
         // make a vector of cards that player have played
         vector<Card> cards_played;
@@ -274,15 +338,30 @@ private:
         }
 
         cout << players[(max_index + (round % 4 + 1)) % 4]->get_name() << " takes the trick " << endl;
-
-        round++; // increasing the round !
+        // If the player's index is divisible by 2 then they must be either player 0 or 2 so team 1
+        if (((max_index + (round % 4 + 1)) % 4) % 2 == 0)
+        {
+            team1_trick++;
+        }
+        else
+        {
+            team2_trick++;
+        }
 
         // INDEX: dealer = 4, lead = 0, lead+1  = 1, lead+2 = 2
         // have to keep track of score after this...
     }
-
-    bool is_march_or_euchred();
-    int which_team();
+    int is_march_or_euchred(bool trump, int trick_took, int &score)
+    {
+        if (score == 5)
+        {
+            // MARCH
+        }
+        if (!trump && trick_took >= 3)
+        {
+            // EUCHRED
+        }
+    };
 };
 
 // 1. First, print the executable and all arguments on the first line.
