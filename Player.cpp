@@ -92,7 +92,7 @@ public:
 		{
 			if (Card_less(hand[i], hand[min_index], upsuit))
 			{
-				cout << hand[i] << " is less than " << hand[min_index] << endl;
+				// cout << hand[i] << " is less than " << hand[min_index] << endl;
 				min_index = i;
 			}
 		}

@@ -7,7 +7,6 @@
 #include "Card.hpp"
 #include "Pack.hpp"
 #include "Player.hpp"
-#include "Player.cpp"
 using namespace std;
 
 // NEED TO DO:
@@ -17,7 +16,7 @@ using namespace std;
 class Game
 {
 public:
-    Game(string file_in, string decision_in, int points_in, vector<Player *> players_in)
+    Game(const string file_in, const string decision_in, const int points_in, vector<Player *> players_in)
         : pack_file(file_in), decision(decision_in), points(points_in), players(players_in){};
 
     void play()
@@ -27,7 +26,9 @@ public:
         assert(ifs.is_open());
         Pack pack(ifs);
         // initializing...
-        int round = 1;
+        int round = 0;
+        cout << "Hand"
+             << " " << round << endl;
         int team1_score = 0;
         int team2_score = 0;
         int team1_trick = 0;
@@ -37,15 +38,17 @@ public:
         Card upcard;
         Suit order_up_suit;
 
-        // print command line
+        suffle(decision);
         while (team1_score < points && team2_score < points)
         // shuffle the deck if user wants to
         {
-            suffle(decision);
+            print_dealer(round);
             // start dealing
             deal(players, pack, upcard, round);
+            print_upcard(upcard);
             // determine the trump suit...
             int make_round = 1;
+
             making_trump(players, upcard, round, make_round,
                          order_up_suit, team1_trump, team2_trump);
             if (!team1_trump && !team1_trump)
@@ -55,21 +58,19 @@ public:
                              order_up_suit, team1_trump, team2_trump);
                 make_round = 1;
             }
+            players[round % 4]->add_and_discard(upcard);
 
+            int lead = round % 4 + 1;
             // start playing... //total of 5 tricks
             for (int i = 0; i <= 5; ++i)
             {
-                play_trick(players, round, order_up_suit, team1_trick, team2_trick);
+                play_trick(players, round, lead, order_up_suit, team1_trick, team2_trick);
             }
             // KEEP TRACK OF ROUND SCORE (euchred or marched)
             is_march_or_euchred(team1_trump, team1_trick, team1_score);
             is_march_or_euchred(team2_trump, team2_trick, team2_score);
             round++;
         }
-
-        // after this is round 2
-
-        assert(false);
     }
 
     ~Game()
@@ -92,24 +93,15 @@ private:
     static const int PACK_SIZE = 24;
     std::array<Card, PACK_SIZE> cards;
 
-    void print_command_line(string exe, string pack_filename, string shuffle_decision,
-                            int points_to_win, string player_name_1, string player_type_1,
-                            string player_name_2, string player_type_2, string player_name_3, string player_type_3,
-                            string player_name_4, string player_type_4)
+    void print_dealer(int round)
     {
-        cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
-             << " " << player_name_1 << " " << player_type_1 << " " << player_name_2 << " "
-             << player_type_2 << " " << player_name_3 << " " << player_type_3 << " "
-             << player_name_3 << " " << player_type_3 << endl;
-    }
-
-    void annoucement(int hand, string dealer, Card upcard)
-    {
-        cout << "Hand"
-             << " " << hand << endl;
-        cout << dealer << " "
+        cout << *players[round % 4] << " "
              << "deals" << endl;
-        cout << upcard << "turned up" << endl;
+    }
+    void print_upcard(Card upcard)
+    {
+        cout << upcard << " "
+             << "turned up" << endl;
     }
 
     void print_decisions(string name, bool decision, Suit up_suit)
@@ -117,11 +109,12 @@ private:
         if (decision)
         {
             cout << name << " "
-                 << "orders up" << up_suit << endl;
+                 << "orders up " << up_suit << endl;
         }
         else
         {
-            cout << name << " " << decision << endl;
+            cout << name << " "
+                 << "passes" << endl;
         }
     }
 
@@ -193,7 +186,6 @@ private:
 
     void making_trump(vector<Player *> players, Card &upcard, int round, int make_round, Suit &order_up_suit, bool &team1_trump, bool &team2_trump)
     {
-        bool order_up = false;
         for (int i = 1; i < players.size() + 1; ++i)
         {
             // player left of dealer & their teammate making trump
@@ -205,21 +197,13 @@ private:
                 {
                     team2_trump = players[(round % 4 + i) % 4]->make_trump(
                         upcard, false, make_round, order_up_suit);
-                    if (team2_trump)
-                    {
-                        print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                        return;
-                    }
+                    print_decisions(players[(round % 4 + i) % 4]->get_name(), team2_trump, order_up_suit);
                 }
                 else
                 {
                     team1_trump = players[(round % 4 + i) % 4]->make_trump(
                         upcard, false, make_round, order_up_suit);
-                    if (team1_trump)
-                    {
-                        print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                        return;
-                    }
+                    print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
                 }
             }
             else if (i % 2 == 0)
@@ -231,21 +215,13 @@ private:
                     {
                         team2_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, false, make_round, order_up_suit);
-                        if (team2_trump)
-                        {
-                            print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                            return;
-                        }
+                        print_decisions(players[(round % 4 + i) % 4]->get_name(), team2_trump, order_up_suit);
                     }
                     else
                     {
                         team1_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, false, make_round, order_up_suit);
-                        if (team1_trump)
-                        {
-                            print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                            return;
-                        }
+                        print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
                     }
                 }
                 // dealer making trump
@@ -255,39 +231,34 @@ private:
                     {
                         team2_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, true, make_round, order_up_suit);
-                        if (team2_trump)
-                        {
-                            print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                            return;
-                        }
+                        print_decisions(players[(round % 4 + i) % 4]->get_name(), team2_trump, order_up_suit);
                     }
                     else
                     {
                         team2_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, true, make_round, order_up_suit);
-                        if (team2_trump)
-                        {
-                            print_decisions(players[(round % 4 + i) % 4]->get_name(), order_up, order_up_suit);
-                            return;
-                        }
+                        print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
                     }
                 }
             }
         }
+        cout << "\n";
     }
 
-    void play_trick(vector<Player *> players, int &round, Suit trump, int &team1_trick, int &team2_trick)
+    void play_trick(vector<Player *> players, int &round, int &lead, Suit trump, int &team1_trick, int &team2_trick)
     {
         // make a vector of cards that player have played
         vector<Card> cards_played;
         // the person to the left of dealer leads the card, and let the card let be led_card
-        Card led_card = players[round % 4 + 1]->lead_card(trump);
+        Card led_card = players[lead]->lead_card(trump);
         // first card played is the led card
         cards_played.push_back(led_card);
         cout << led_card << " led by " << *players[round % 4 + 1] << endl;
         for (int i = 2; i < players.size() + 1; ++i)
         {
-            cards_played.push_back(players[(round % 4 + i) % 4]->play_card(led_card, trump));
+            cout << players[(lead + i) % 4]->play_card(led_card, trump)
+                 << " played by " << *players[lead + i] << endl;
+            cards_played.push_back(players[(lead + i) % 4]->play_card(led_card, trump));
         }
         // get index of the biggest card in this round/trick
         int max_index = 0;
@@ -299,7 +270,10 @@ private:
             }
         }
 
-        cout << *players[(max_index + (round % 4 + 1)) % 4] << " takes the trick " << endl;
+        cout << *players[(max_index + (round % 4 + 1)) % 4] << " takes the trick "
+             << "\n"
+             << endl;
+        lead = (max_index + (round % 4 + 1)) % 4;
         // If the player's index is divisible by 2 then they must be either player 0 or 2 so team 1
         if (((max_index + (round % 4 + 1)) % 4) % 2 == 0)
         {
@@ -355,7 +329,7 @@ int main(int argc, char *argv[])
              << "NAME4 TYPE4" << endl;
         return 1;
     }
-
+    string exe = argv[0];
     string pack_filename = argv[1];
     string shuffle_decision = argv[2];
     int points_to_win = atoi(argv[3]);
@@ -426,14 +400,19 @@ int main(int argc, char *argv[])
              << "NAME4 TYPE4" << endl;
         return 1;
     }
+    cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
+         << " " << player_name_1 << " " << player_type_1 << " " << player_name_2 << " "
+         << player_type_2 << " " << player_name_3 << " " << player_type_3 << " "
+         << player_name_3 << " " << player_type_3 << endl;
     vector<Player *> players_in;
-    players_in.push_back(Player_factory(player_type_0, player_name_0));
-    players_in.push_back(Player_factory(player_type_1, player_name_1));
-    players_in.push_back(Player_factory(player_type_2, player_name_2));
-    players_in.push_back(Player_factory(player_type_3, player_name_3));
+    players_in.push_back(Player_factory(player_name_0, player_type_0));
+    players_in.push_back(Player_factory(player_name_1, player_type_1));
+    players_in.push_back(Player_factory(player_name_2, player_type_2));
+    players_in.push_back(Player_factory(player_name_3, player_type_3));
 
-    Game game(pack_filename, shuffle_decision, points_to_win, players_in);
-    game.play();
+    Game *game = new Game(pack_filename, shuffle_decision, points_to_win, players_in);
+    game->play();
+    delete game;
 
     return 0;
 }
