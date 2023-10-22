@@ -17,18 +17,8 @@ using namespace std;
 class Game
 {
 public:
-    Game(char *argv[])
-        : pack_file(argv[1]), decision(argv[2]), points(atoi(argv[3]))
-    {
-        // player 0 = [4],[5];
-        // player 1 = [6],[7];
-        // player 2 = [8],[9];
-        // player 3 = [10],[11];
-        for (int i = 0; i <= 6; i += 2)
-        {
-            players.push_back(Player_factory(argv[4 + i], argv[4 + i + 1]));
-        }
-    };
+    Game(string file_in, string decision_in, int points_in, vector<Player *> players_in)
+        : pack_file(file_in), decision(decision_in), points(points_in), players(players_in){};
 
     void play()
     {
@@ -80,7 +70,15 @@ public:
         // after this is round 2
 
         assert(false);
-    };
+    }
+
+    ~Game()
+    {
+        for (size_t i = 0; i < players.size(); ++i)
+        {
+            delete players[i];
+        }
+    }
 
 private:
     string pack_file;
@@ -361,10 +359,14 @@ int main(int argc, char *argv[])
     string pack_filename = argv[1];
     string shuffle_decision = argv[2];
     int points_to_win = atoi(argv[3]);
-    string player_type_1 = argv[5];
-    string player_type_2 = argv[7];
-    string player_type_3 = argv[9];
-    string player_type_4 = argv[11];
+    string player_name_0 = argv[4];
+    string player_type_0 = argv[5];
+    string player_name_1 = argv[6];
+    string player_type_1 = argv[7];
+    string player_name_2 = argv[8];
+    string player_type_2 = argv[9];
+    string player_name_3 = argv[10];
+    string player_type_3 = argv[11];
 
     ifstream input_file;
     input_file.open((pack_filename).c_str());
@@ -395,11 +397,19 @@ int main(int argc, char *argv[])
     }
 
     // if player type is not simple or human, print error message
+    if (player_type_0 != "Simple" && player_type_0 != "Human")
+    {
+        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
+             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
+             << "NAME4 TYPE4" << endl;
+    }
+
     if (player_type_1 != "Simple" && player_type_1 != "Human")
     {
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
              << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
              << "NAME4 TYPE4" << endl;
+        return 1;
     }
 
     if (player_type_2 != "Simple" && player_type_2 != "Human")
@@ -409,7 +419,6 @@ int main(int argc, char *argv[])
              << "NAME4 TYPE4" << endl;
         return 1;
     }
-
     if (player_type_3 != "Simple" && player_type_3 != "Human")
     {
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
@@ -417,15 +426,13 @@ int main(int argc, char *argv[])
              << "NAME4 TYPE4" << endl;
         return 1;
     }
-    if (player_type_4 != "Simple" && player_type_4 != "Human")
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
+    vector<Player *> players_in;
+    players_in.push_back(Player_factory(player_type_0, player_name_0));
+    players_in.push_back(Player_factory(player_type_1, player_name_1));
+    players_in.push_back(Player_factory(player_type_2, player_name_2));
+    players_in.push_back(Player_factory(player_type_3, player_name_3));
 
-    Game game(argv);
+    Game game(pack_filename, shuffle_decision, points_to_win, players_in);
     game.play();
 
     return 0;
