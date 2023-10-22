@@ -53,7 +53,7 @@ TEST(test_make_trump2)
     Suit trump;
     bool orderup = bob->make_trump(
         nine_spades, // Upcard
-        false,        // Bob is also the dealer
+        false,       // Bob is also the dealer
         2,           // First round
         trump        // Suit ordered up (if any)
     );
@@ -397,9 +397,9 @@ TEST(test_add_and_discard_2)
     bob->add_and_discard(Card(TEN, HEARTS));
     // add ten of hearts and discard jack of spades
     Card played1 = bob->play_card(Card(ACE, SPADES), HEARTS);
-    
+
     ASSERT_EQUAL(played1, Card(QUEEN, CLUBS));
-    
+
     delete bob;
 }
 

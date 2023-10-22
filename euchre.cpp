@@ -16,15 +16,11 @@ using namespace std;
 class Game
 {
 public:
-    Game(const string file_in, const string decision_in, const int points_in, vector<Player *> players_in)
-        : pack_file(file_in), decision(decision_in), points(points_in), players(players_in){};
+    Game(const Pack &pack_in, const string decision_in, const int points_in, vector<Player *> players_in)
+        : deck(pack_in), decision(decision_in), points(points_in), players(players_in){};
 
     void play()
     {
-        // reading pack from file..
-        ifstream ifs(pack_file);
-        assert(ifs.is_open());
-        Pack pack(ifs);
         // initializing...
         int round = 0;
         cout << "Hand"
@@ -44,7 +40,7 @@ public:
         {
             print_dealer(round);
             // start dealing
-            deal(players, pack, upcard, round);
+            deal(players, deck, upcard, round);
             print_upcard(upcard);
             // determine the trump suit...
             int make_round = 1;
@@ -60,9 +56,9 @@ public:
             }
             players[round % 4]->add_and_discard(upcard);
 
-            int lead = round % 4 + 1;
+            int lead = (round % 4) + 1;
             // start playing... //total of 5 tricks
-            for (int i = 0; i <= 5; ++i)
+            for (int i = 0; i < 5; ++i)
             {
                 play_trick(players, round, lead, order_up_suit, team1_trick, team2_trick);
             }
@@ -82,12 +78,11 @@ public:
     }
 
 private:
-    string pack_file;
+    Pack deck;
     string decision;
     int points;
     // Player *player;
     std::vector<Player *> players;
-    Pack pack;
     // int round;
     vector<Card> hand;
     static const int PACK_SIZE = 24;
@@ -142,7 +137,7 @@ private:
     {
         if (decision == "shuffle")
         {
-            pack.shuffle();
+            deck.shuffle();
         }
     }
 
@@ -235,7 +230,7 @@ private:
                     }
                     else
                     {
-                        team2_trump = players[(round % 4 + i) % 4]->make_trump(
+                        team1_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, true, make_round, order_up_suit);
                         print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
                     }
@@ -245,7 +240,7 @@ private:
         cout << "\n";
     }
 
-    void play_trick(vector<Player *> players, int &round, int &lead, Suit trump, int &team1_trick, int &team2_trick)
+    void play_trick(vector<Player *> players, int round, int &lead, Suit trump, int &team1_trick, int &team2_trick)
     {
         // make a vector of cards that player have played
         vector<Card> cards_played;
@@ -253,18 +248,19 @@ private:
         Card led_card = players[lead]->lead_card(trump);
         // first card played is the led card
         cards_played.push_back(led_card);
-        cout << led_card << " led by " << *players[round % 4 + 1] << endl;
-        for (int i = 2; i < players.size() + 1; ++i)
+        cout << led_card << " led by " << players[lead]->get_name() << endl;
+        for (int i = 1; i < players.size(); ++i)
         {
-            cout << players[(lead + i) % 4]->play_card(led_card, trump)
-                 << " played by " << *players[lead + i] << endl;
-            cards_played.push_back(players[(lead + i) % 4]->play_card(led_card, trump));
+            Card card_played = players[(lead + i) % 4]->play_card(led_card, trump);
+            cout << card_played
+                 << " played by " << players[(lead + i) % 4]->get_name() << endl;
+            cards_played.push_back(card_played);
         }
         // get index of the biggest card in this round/trick
         int max_index = 0;
         for (int j = 0; j < cards_played.size(); ++j)
         {
-            if (Card_less(cards_played[max_index], cards_played[j], trump))
+            if (Card_less(cards_played[max_index], cards_played[j], led_card, trump))
             {
                 max_index = j;
             }
@@ -274,6 +270,7 @@ private:
              << "\n"
              << endl;
         lead = (max_index + (round % 4 + 1)) % 4;
+        cout << "lead: " << lead << endl;
         // If the player's index is divisible by 2 then they must be either player 0 or 2 so team 1
         if (((max_index + (round % 4 + 1)) % 4) % 2 == 0)
         {
@@ -293,11 +290,13 @@ private:
         {
             score += 2;
             // MARCH
+            cout << "Marched" << endl;
         }
         else if (!trump && trick_took >= 3)
         {
             // EUCHRED
             score += 2;
+            cout << "Euchred" << endl;
         }
         else if (trick_took >= 3)
         {
@@ -405,12 +404,14 @@ int main(int argc, char *argv[])
          << player_type_2 << " " << player_name_3 << " " << player_type_3 << " "
          << player_name_3 << " " << player_type_3 << endl;
     vector<Player *> players_in;
+    ifstream ifs(pack_filename);
+    Pack pack_in(ifs);
     players_in.push_back(Player_factory(player_name_0, player_type_0));
     players_in.push_back(Player_factory(player_name_1, player_type_1));
     players_in.push_back(Player_factory(player_name_2, player_type_2));
     players_in.push_back(Player_factory(player_name_3, player_type_3));
 
-    Game *game = new Game(pack_filename, shuffle_decision, points_to_win, players_in);
+    Game *game = new Game(pack_in, shuffle_decision, points_to_win, players_in);
     game->play();
     delete game;
 
