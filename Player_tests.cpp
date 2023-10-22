@@ -403,4 +403,34 @@ TEST(test_add_and_discard_2)
     delete bob;
 }
 
+TEST(test_for_euchre)
+{
+    Player *barb = Player_factory("Barbara", "Simple");
+    barb->add_card(Card(JACK, SPADES));
+    barb->add_card(Card(NINE, SPADES));
+    barb->add_card(Card(TEN, SPADES));
+    barb->add_card(Card(ACE, HEARTS));
+    barb->add_card(Card(KING, HEARTS));
+    // add ten of hearts and discard jack of spades
+    Card upcard = Card(JACK, DIAMONDS);
+    Suit order_up_suit;
+
+    ASSERT_TRUE(barb->make_trump(upcard, false, 2, order_up_suit));
+    ASSERT_EQUAL(order_up_suit, HEARTS);
+
+    delete barb;
+}
+
+TEST(test_for_euchre2)
+{
+    Player *barb = Player_factory("Barbara", "Simple");
+    barb->add_card(Card(KING, CLUBS));
+    barb->add_card(Card(QUEEN, CLUBS));
+    barb->add_card(Card(TEN, HEARTS));
+    barb->add_card(Card(NINE, HEARTS));
+
+    ASSERT_EQUAL(Card(KING, CLUBS), barb->lead_card(HEARTS));
+
+    delete barb;
+}
 TEST_MAIN()

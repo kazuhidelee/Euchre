@@ -57,7 +57,7 @@ public:
 		{
 			for (int i = 0; i < hand.size(); ++i)
 			{
-				if ((hand[i].is_face_or_ace() && hand[i].is_trump(up_suit)))
+				if ((hand[i].is_face_or_ace() && hand[i].is_trump(Suit_next(up_suit))))
 				{
 					card_count += 1;
 				}
@@ -112,9 +112,12 @@ public:
 		{
 			if (!(hand[k].is_trump(trump)))
 			{
+				max_index = k;
 				all_trump = false;
+				break;
 			}
 		}
+
 		if (!(all_trump))
 		{
 			for (int i = 0; i < hand.size(); ++i)
@@ -129,7 +132,7 @@ public:
 		{
 			for (int j = 0; j < hand.size(); ++j)
 			{
-				if (Card_less(hand[max_index], hand[j], trump))
+				if ((hand[j].is_trump(trump)) && Card_less(hand[max_index], hand[j], trump))
 				{
 					max_index = j;
 				}
@@ -154,11 +157,11 @@ public:
 		{
 			if (hand[i].get_suit(trump) == led_suit)
 			{
+				highest = i;
 				follow_suit = true;
+				break;
 			}
 		}
-		// cout << led_suit << endl;
-		//  cout << follow_suit << endl;
 
 		if (follow_suit)
 		{
@@ -172,7 +175,6 @@ public:
 				}
 			}
 			Card most = hand[highest];
-			// cout << most << endl;
 			hand.erase(hand.begin() + highest);
 			return most;
 		}
@@ -216,6 +218,7 @@ public:
 	void add_card(const Card &c) override
 	{
 		hand.push_back(c);
+		sort(hand.begin(), hand.end());
 	}
 
 	// REQUIRES round is 1 or 2
@@ -245,12 +248,11 @@ public:
 	// EFFECTS  Player adds one card to hand and removes one card from hand.
 	void add_and_discard(const Card &upcard) override
 	{
-		int decision;
+		int decision = 0;
 		print_hand();
 		cout << "Discard upcard: [-1]\n";
 		cout << "Human player " << name << ", please select a card to discard:\n";
 		cin >> decision;
-		add_card(upcard);
 
 		if (decision == -1)
 		{
@@ -260,7 +262,7 @@ public:
 		{
 			hand.erase(hand.begin() + decision);
 		}
-		sort(hand.begin(), hand.end());
+		add_card(upcard);
 	}
 
 	// REQUIRES Player has at least one card
@@ -271,6 +273,7 @@ public:
 	{
 		int decision;
 		Card lead;
+		sort(hand.begin(), hand.end());
 		print_hand();
 		cout << "Human player " << name << ", please select a card:\n";
 		cin >> decision;
@@ -286,6 +289,7 @@ public:
 	{
 		int decision;
 		Card lead;
+		sort(hand.begin(), hand.end());
 		print_hand();
 		cout << "Human player " << name << ", please select a card:\n";
 		cin >> decision;
@@ -304,6 +308,7 @@ private:
 	vector<Card> hand;
 	void print_hand() const
 	{
+		// sort(hand.begin(), hand.end());
 		for (size_t i = 0; i < hand.size(); ++i)
 			cout << "Human player " << name << "'s hand: "
 				 << "[" << i << "] " << hand[i] << "\n";

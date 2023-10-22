@@ -16,15 +16,13 @@ using namespace std;
 class Game
 {
 public:
-    Game(const Pack &pack_in, const string decision_in, const int points_in, vector<Player *> players_in)
+    Game(const Pack &pack_in, const string &decision_in, const int &points_in, vector<Player *> &players_in)
         : deck(pack_in), decision(decision_in), points(points_in), players(players_in){};
 
     void play()
     {
         // initializing...
         int round = 0;
-        cout << "Hand"
-             << " " << round << endl;
         int team1_score = 0;
         int team2_score = 0;
         int team1_trick = 0;
@@ -38,6 +36,8 @@ public:
         while (team1_score < points && team2_score < points)
         // shuffle the deck if user wants to
         {
+            cout << "Hand"
+                 << " " << round << endl;
             print_dealer(round);
             // start dealing
             deal(players, deck, upcard, round);
@@ -47,26 +47,33 @@ public:
 
             making_trump(players, upcard, round, make_round,
                          order_up_suit, team1_trump, team2_trump);
-            if (!team1_trump && !team1_trump)
+            if (team1_trump || team2_trump)
+            {
+                players[round % 4]->add_and_discard(upcard);
+            }
+            else
             {
                 make_round += 1;
                 making_trump(players, upcard, round, make_round,
                              order_up_suit, team1_trump, team2_trump);
                 make_round = 1;
             }
-            players[round % 4]->add_and_discard(upcard);
+            cout << "\n";
 
             int lead = (round % 4) + 1;
+            // cout << order_up_suit << endl;
             // start playing... //total of 5 tricks
             for (int i = 0; i < 5; ++i)
             {
                 play_trick(players, round, lead, order_up_suit, team1_trick, team2_trick);
             }
             // KEEP TRACK OF ROUND SCORE (euchred or marched)
-            is_march_or_euchred(team1_trump, team1_trick, team1_score);
-            is_march_or_euchred(team2_trump, team2_trick, team2_score);
+            is_march_or_euchred(1, team1_trump, team1_trick, team1_score);
+            is_march_or_euchred(2, team2_trump, team2_trick, team2_score);
+            print_score(players, team1_score, team2_score);
             round++;
         }
+        winner(team1_score, team2_score);
     }
 
     ~Game()
@@ -87,7 +94,19 @@ private:
     vector<Card> hand;
     static const int PACK_SIZE = 24;
     std::array<Card, PACK_SIZE> cards;
-
+    void winner(int team1_score, int team2_score)
+    {
+        if (team1_score > team2_score)
+        {
+            cout << *players[0] << " and " << *players[2]
+                 << " win! " << endl;
+        }
+        else
+        {
+            cout << *players[1] << " and " << *players[3]
+                 << " win!" << endl;
+        }
+    }
     void print_dealer(int round)
     {
         cout << *players[round % 4] << " "
@@ -121,16 +140,17 @@ private:
              << "win the hand" << endl;
     }
 
-    void print_score(string name1, string name2, string name3, string name4, int score1, int score2)
+    void print_score(vector<Player *> players, int score1, int score2)
     {
-        cout << name1 << " "
+        cout << players[0]->get_name() << " "
              << "and"
-             << " " << name3 << " "
+             << " " << players[2]->get_name() << " "
              << "have " << score1 << " points" << endl;
-        cout << name2 << " "
+        cout << players[1]->get_name() << " "
              << "and"
-             << " " << name4 << " "
+             << " " << players[3]->get_name() << " "
              << "have " << score2 << " points" << endl;
+        cout << "\n";
     }
 
     void suffle(string decision)
@@ -193,12 +213,16 @@ private:
                     team2_trump = players[(round % 4 + i) % 4]->make_trump(
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), team2_trump, order_up_suit);
+                    if (team2_trump)
+                        return;
                 }
                 else
                 {
                     team1_trump = players[(round % 4 + i) % 4]->make_trump(
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
+                    if (team1_trump)
+                        return;
                 }
             }
             else if (i % 2 == 0)
@@ -211,12 +235,16 @@ private:
                         team2_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, false, make_round, order_up_suit);
                         print_decisions(players[(round % 4 + i) % 4]->get_name(), team2_trump, order_up_suit);
+                        if (team2_trump)
+                            return;
                     }
                     else
                     {
                         team1_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, false, make_round, order_up_suit);
                         print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
+                        if (team1_trump)
+                            return;
                     }
                 }
                 // dealer making trump
@@ -227,17 +255,20 @@ private:
                         team2_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, true, make_round, order_up_suit);
                         print_decisions(players[(round % 4 + i) % 4]->get_name(), team2_trump, order_up_suit);
+                        if (team2_trump)
+                            return;
                     }
                     else
                     {
                         team1_trump = players[(round % 4 + i) % 4]->make_trump(
                             upcard, true, make_round, order_up_suit);
                         print_decisions(players[(round % 4 + i) % 4]->get_name(), team1_trump, order_up_suit);
+                        if (team1_trump)
+                            return;
                     }
                 }
             }
         }
-        cout << "\n";
     }
 
     void play_trick(vector<Player *> players, int round, int &lead, Suit trump, int &team1_trick, int &team2_trick)
@@ -266,41 +297,66 @@ private:
             }
         }
 
-        cout << *players[(max_index + (round % 4 + 1)) % 4] << " takes the trick "
+        cout << *players[(max_index + lead) % 4] << " takes the trick"
              << "\n"
              << endl;
-        lead = (max_index + (round % 4 + 1)) % 4;
-        cout << "lead: " << lead << endl;
+        lead = (max_index + lead) % 4;
         // If the player's index is divisible by 2 then they must be either player 0 or 2 so team 1
         if (((max_index + (round % 4 + 1)) % 4) % 2 == 0)
         {
-            team1_trick++;
+            team2_trick++;
         }
         else
         {
-            team2_trick++;
+            team1_trick++;
         }
 
         // INDEX: dealer = 4, lead = 0, lead+1  = 1, lead+2 = 2
         // have to keep track of score after this...
     }
-    void is_march_or_euchred(bool trump, int trick_took, int &score)
+    void is_march_or_euchred(int team, bool trump, int trick_took, int &score)
     {
         if (score == 5)
         {
             score += 2;
             // MARCH
-            cout << "Marched" << endl;
+            if (team == 1)
+            {
+                cout << players[0]->get_name() << " and " << players[2]->get_name() << " win the hand" << endl;
+                cout << "marched!" << endl;
+            }
+            else
+            {
+                cout << players[1]->get_name() << " and " << players[3]->get_name() << " win the hand" << endl;
+                cout << "marched!" << endl;
+            }
         }
         else if (!trump && trick_took >= 3)
         {
             // EUCHRED
             score += 2;
-            cout << "Euchred" << endl;
+            if (team == 1)
+            {
+                cout << players[0]->get_name() << " and " << players[2]->get_name() << " win the hand" << endl;
+                cout << "euchred!" << endl;
+            }
+            else
+            {
+                cout << players[1]->get_name() << " and " << players[3]->get_name() << " win the hand" << endl;
+                cout << "euchred!" << endl;
+            }
         }
         else if (trick_took >= 3)
         {
             score += 1;
+            if (team == 1)
+            {
+                cout << players[0]->get_name() << " and " << players[2]->get_name() << " win the hand" << endl;
+            }
+            else
+            {
+                cout << players[1]->get_name() << " and " << players[3]->get_name() << " win the hand" << endl;
+            }
         }
     }
 };
@@ -400,9 +456,9 @@ int main(int argc, char *argv[])
         return 1;
     }
     cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
-         << " " << player_name_1 << " " << player_type_1 << " " << player_name_2 << " "
-         << player_type_2 << " " << player_name_3 << " " << player_type_3 << " "
-         << player_name_3 << " " << player_type_3 << endl;
+         << " " << player_name_0 << " " << player_type_0 << " " << player_name_1 << " "
+         << player_type_1 << " " << player_name_2 << " " << player_type_2 << " "
+         << player_name_3 << " " << player_type_3 << " " << endl;
     vector<Player *> players_in;
     ifstream ifs(pack_filename);
     Pack pack_in(ifs);

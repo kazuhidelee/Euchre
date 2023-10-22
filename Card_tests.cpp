@@ -307,4 +307,12 @@ TEST(test_card_less_for_euchre)
     ASSERT_TRUE(Card_less(a, b, led_card, HEARTS));
 }
 
+TEST(test_card_less_for_euchre2)
+{
+    Card a(ACE, CLUBS);
+    Card b(JACK, CLUBS);
+    Card led_card(KING, CLUBS);
+    ASSERT_TRUE(Card_less(b, a, led_card, HEARTS));
+}
+
 TEST_MAIN()
