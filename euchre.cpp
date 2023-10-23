@@ -299,7 +299,7 @@ private:
     {
         // make a vector of cards that player have played
         vector<Card> cards_played;
-        // the person to the left of dealer leads the card, and let the card let be led_card
+        //person left of dealer leads the card, and let the card let be led_card
         Card led_card = players[lead]->lead_card(trump);
         // first card played is the led card
         cards_played.push_back(led_card);
@@ -324,7 +324,7 @@ private:
         cout << *players[(max_index + lead) % 4] << " takes the trick"
              << "\n"
              << endl;
-        // If the player's index is divisible by 2 then they must be either player 0 or 2 so team 1
+        // If player's index is divisible by 2, they must be player 0 or 2 (team 1)
         if (((max_index + lead) % 4) % 2 == 0)
         {
             ++team1_trick;
@@ -457,34 +457,15 @@ int main(int argc, char *argv[])
     }
 
     // if player type is not simple or human, print error message
-    if (player_type_0 != "Simple" && player_type_0 != "Human")
+    if ((player_type_0 != "Simple" && player_type_0 != "Human") ||
+    (player_type_1 != "Simple" && player_type_1 != "Human") ||
+    (player_type_2 != "Simple" && player_type_2 != "Human") ||
+    (player_type_3 != "Simple" && player_type_3 != "Human"))
     {
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
              << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
              << "NAME4 TYPE4" << endl;
-    }
-
-    if (player_type_1 != "Simple" && player_type_1 != "Human")
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
-
-    if (player_type_2 != "Simple" && player_type_2 != "Human")
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
-    if (player_type_3 != "Simple" && player_type_3 != "Human")
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
+             return 1;
     }
     cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
          << " " << player_name_0 << " " << player_type_0 << " " << player_name_1 << " "
