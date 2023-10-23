@@ -222,78 +222,65 @@ private:
         {
             // player left of dealer & their teammate making trump
             // cicle 1:
-            if (i % 2 != 0)
+            if ((i % 2 != 0) && (round % 2 == 0))
             {
-                if (round % 2 == 0)
                 // round 0, 2 dealer is team 1
-                {
-                    team2_trump = players[(round % 4 + i) % 4]->make_trump(
-                        upcard, false, make_round, order_up_suit);
-                    print_decisions(players[(round % 4 + i) % 4]->get_name(),
-                                    team2_trump, order_up_suit);
-                    if (team2_trump)
-                        return;
-                }
-                else
-                {
-                    team1_trump = players[(round % 4 + i) % 4]->make_trump(
+                team2_trump = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, false, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(),
+                                team2_trump, order_up_suit);
+                if (team2_trump)
+                    return;
+            } 
+            else if ((i % 2 != 0)) 
+            {
+                team1_trump = players[(round % 4 + i) % 4]->make_trump(
                         upcard, false, make_round, order_up_suit);
                     print_decisions(players[(round % 4 + i) % 4]->get_name(),
                                     team1_trump, order_up_suit);
                     if (team1_trump)
                         return;
-                }
             }
-            else if (i % 2 == 0)
+            else if (i % 2 == 0 && i == 2 && round % 2 == 0)
             {
                 // dealer's teammate making trump
-                if (i == 2)
-                {
-                    if (round % 2 == 0)
-                    {
-                        team1_trump = players[(round % 4 + i) % 4]->make_trump(
-                            upcard, false, make_round, order_up_suit);
-                        print_decisions(players[(round % 4 + i) % 4]->get_name(),
-                                        team1_trump, order_up_suit);
-                        if (team1_trump)
-                            return;
-                    }
-                    else
-                    {
-                        team2_trump = players[(round % 4 + i) % 4]->make_trump(
-                            upcard, false, make_round, order_up_suit);
-                        print_decisions(players[(round % 4 + i) % 4]->get_name(),
-                                        team2_trump, order_up_suit);
-                        if (team2_trump)
-                            return;
-                    }
-                }
-                // dealer making trump
-                else
-                {
-                    if (round % 2 == 0)
-                    {
-                        team1_trump = players[(round % 4 + i) % 4]->make_trump(
-                            upcard, true, make_round, order_up_suit);
-                        print_decisions(players[(round % 4 + i) % 4]->get_name(),
-                                        team1_trump, order_up_suit);
-                        if (team1_trump)
-                            return;
-                    }
-                    else
-                    {
-                        team2_trump = players[(round % 4 + i) % 4]->make_trump(
-                            upcard, true, make_round, order_up_suit);
-                        print_decisions(players[(round % 4 + i) % 4]->get_name(),
-                                        team2_trump, order_up_suit);
-                        if (team2_trump)
-                            return;
-                    }
-                }
+                team1_trump = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, false, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(),
+                                team1_trump, order_up_suit);
+                if (team1_trump)
+                    return;
+            }
+            else if (i % 2 == 0 && i == 2)
+            {
+                team2_trump = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, false, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(),
+                                team2_trump, order_up_suit);
+                if (team2_trump)
+                    return;
+            }
+            else if(round % 2 == 0)
+            // dealer making trump
+            {
+                team1_trump = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, true, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(),
+                                team1_trump, order_up_suit);
+                if (team1_trump)
+                    return;
+            }
+            else
+            {
+                team2_trump = players[(round % 4 + i) % 4]->make_trump(
+                    upcard, true, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(),
+                                team2_trump, order_up_suit);
+                if (team2_trump)
+                    return;
             }
         }
     }
-
     void play_trick(vector<Player *> players, int &lead, Suit trump,
                     int &team1_trick, int &team2_trick)
     {
