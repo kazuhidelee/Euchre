@@ -40,7 +40,7 @@ public:
             print_dealer(round);
             // start dealing
             suffle(decision);
-            // deck.reset();
+            deck.reset();
             deal(players, deck, upcard, round);
             upcard = deck.deal_one();
             print_upcard(upcard);
