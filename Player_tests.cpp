@@ -131,8 +131,6 @@ TEST(test_player_make_trump_and_order_up_true)
     // Verify Bob's order up and trump suit
     ASSERT_TRUE(orderup);
     ASSERT_EQUAL(trump, CLUBS);
-    // consider suit of up card only in first round but in second round not considering it so should be clubs
-
     delete bob;
 }
 

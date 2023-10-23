@@ -23,13 +23,12 @@ public:
     void play()
     {
         // initializing...
-        int round = 0;
         int team1_score = 0;
         int team2_score = 0;
-        int team1_trick = 0;
-        int team2_trick = 0;
-        bool team1_trump = false;
-        bool team2_trump = false;
+        // int team1_trick = 0;
+        // int team2_trick = 0;
+        // bool team1_trump = false;
+        // bool team2_trump = false;
         Card upcard;
         Suit order_up_suit;
         while (team1_score < points && team2_score < points)
@@ -41,14 +40,14 @@ public:
             // start dealing
             suffle(decision);
             deck.reset();
-            deal(players, deck, upcard, round);
+            deal(players, deck, upcard);
             upcard = deck.deal_one();
             print_upcard(upcard);
             // determine the trump suit...
             int make_round = 1;
 
-            making_trump(players, upcard, round, make_round,
-                         order_up_suit, team1_trump, team2_trump);
+            making_trump(players, upcard, make_round,
+                         order_up_suit);
             if (team1_trump || team2_trump)
             {
                 players[round % 4]->add_and_discard(upcard);
@@ -56,8 +55,8 @@ public:
             else
             {
                 make_round += 1;
-                making_trump(players, upcard, round, make_round,
-                             order_up_suit, team1_trump, team2_trump);
+                making_trump(players, upcard, make_round,
+                             order_up_suit);
                 make_round = 1;
             }
             cout << "\n";
@@ -67,7 +66,7 @@ public:
             // start playing... //total of 5 tricks
             for (int i = 0; i < 5; ++i)
             {
-                play_trick(players, lead, order_up_suit, team1_trick, team2_trick);
+                play_trick(players, lead, order_up_suit);
             }
             // KEEP TRACK OF ROUND SCORE (euchred or marched)
             is_march_or_euchred(1, team1_trump, team1_trick, team1_score);
@@ -94,6 +93,11 @@ private:
     Pack deck;
     string decision;
     int points;
+    int team1_trick = 0;
+    int team2_trick = 0;
+    bool team1_trump = false;
+    bool team2_trump = false;
+    int round = 0;
     // Player *player;
     std::vector<Player *> players;
     // int round;
@@ -171,7 +175,7 @@ private:
         }
     }
 
-    void deal(vector<Player *> players, Pack &pack, Card &upcard, int round)
+    void deal(vector<Player *> players, Pack &pack, Card &upcard)
     {
         // Player *dealer = players[round % 4];
         // First cicle
@@ -215,8 +219,8 @@ private:
         // upcard = pack.deal_one();
     }
 
-    void making_trump(vector<Player *> players, Card &upcard, int round, int make_round,
-                      Suit &order_up_suit, bool &team1_trump, bool &team2_trump)
+    void making_trump(vector<Player *> players, Card &upcard, int make_round,
+                      Suit &order_up_suit)
     {
         for (int i = 1; i < players.size() + 1; ++i)
         {
@@ -231,15 +235,15 @@ private:
                                 team2_trump, order_up_suit);
                 if (team2_trump)
                     return;
-            } 
-            else if ((i % 2 != 0)) 
+            }
+            else if ((i % 2 != 0))
             {
                 team1_trump = players[(round % 4 + i) % 4]->make_trump(
-                        upcard, false, make_round, order_up_suit);
-                    print_decisions(players[(round % 4 + i) % 4]->get_name(),
-                                    team1_trump, order_up_suit);
-                    if (team1_trump)
-                        return;
+                    upcard, false, make_round, order_up_suit);
+                print_decisions(players[(round % 4 + i) % 4]->get_name(),
+                                team1_trump, order_up_suit);
+                if (team1_trump)
+                    return;
             }
             else if (i % 2 == 0 && i == 2 && round % 2 == 0)
             {
@@ -260,7 +264,7 @@ private:
                 if (team2_trump)
                     return;
             }
-            else if(round % 2 == 0)
+            else if (round % 2 == 0)
             // dealer making trump
             {
                 team1_trump = players[(round % 4 + i) % 4]->make_trump(
@@ -281,12 +285,11 @@ private:
             }
         }
     }
-    void play_trick(vector<Player *> players, int &lead, Suit trump,
-                    int &team1_trick, int &team2_trick)
+    void play_trick(vector<Player *> players, int &lead, Suit trump)
     {
         // make a vector of cards that player have played
         vector<Card> cards_played;
-        //person left of dealer leads the card, and let the card let be led_card
+        // person left of dealer leads the card, and let the card let be led_card
         Card led_card = players[lead]->lead_card(trump);
         // first card played is the led card
         cards_played.push_back(led_card);
@@ -445,14 +448,14 @@ int main(int argc, char *argv[])
 
     // if player type is not simple or human, print error message
     if ((player_type_0 != "Simple" && player_type_0 != "Human") ||
-    (player_type_1 != "Simple" && player_type_1 != "Human") ||
-    (player_type_2 != "Simple" && player_type_2 != "Human") ||
-    (player_type_3 != "Simple" && player_type_3 != "Human"))
+        (player_type_1 != "Simple" && player_type_1 != "Human") ||
+        (player_type_2 != "Simple" && player_type_2 != "Human") ||
+        (player_type_3 != "Simple" && player_type_3 != "Human"))
     {
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
              << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
              << "NAME4 TYPE4" << endl;
-             return 1;
+        return 1;
     }
     cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
          << " " << player_name_0 << " " << player_type_0 << " " << player_name_1 << " "
