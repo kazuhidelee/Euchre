@@ -396,6 +396,41 @@ private:
     }
 };
 
+void check_points(int points_to_win)
+{
+    if (!(points_to_win >= 1 && points_to_win <= 100))
+    {
+        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
+             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
+             << "NAME4 TYPE4" << endl;
+        return;
+    }
+}
+
+void check_shuffle(string shuffle_decision)
+{
+    if (shuffle_decision != "shuffle" && shuffle_decision != "noshuffle")
+    {
+        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
+             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
+             << "NAME4 TYPE4" << endl;
+        return;
+    }
+}
+void check_player_type(string player_type_0, string player_type_1,
+                       string player_type_2, string player_type_3)
+{
+    if ((player_type_0 != "Simple" && player_type_0 != "Human") ||
+        (player_type_1 != "Simple" && player_type_1 != "Human") ||
+        (player_type_2 != "Simple" && player_type_2 != "Human") ||
+        (player_type_3 != "Simple" && player_type_3 != "Human"))
+    {
+        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
+             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
+             << "NAME4 TYPE4" << endl;
+        return;
+    }
+}
 int main(int argc, char *argv[])
 {
     if (argc != 12)
@@ -417,46 +452,16 @@ int main(int argc, char *argv[])
     string player_type_2 = argv[9];
     string player_name_3 = argv[10];
     string player_type_3 = argv[11];
-
     ifstream input_file;
     input_file.open((pack_filename).c_str());
-
-    // if input_file is open, if not print error message
     if (!input_file.is_open())
     {
         cout << "Error opening " << pack_filename << endl;
         return 1;
     }
-
-    // if points_to_win is not 1-100 inclusive, print error message
-    if (!(points_to_win >= 1 && points_to_win <= 100))
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
-
-    // if shuffle_decision is not present, print error message
-    if (shuffle_decision != "shuffle" && shuffle_decision != "noshuffle")
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
-
-    // if player type is not simple or human, print error message
-    if ((player_type_0 != "Simple" && player_type_0 != "Human") ||
-        (player_type_1 != "Simple" && player_type_1 != "Human") ||
-        (player_type_2 != "Simple" && player_type_2 != "Human") ||
-        (player_type_3 != "Simple" && player_type_3 != "Human"))
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
+    check_points(points_to_win);
+    check_shuffle(shuffle_decision);
+    check_player_type(player_type_0, player_type_1, player_type_2, player_type_3);
     cout << exe << " " << pack_filename << " " << shuffle_decision << " " << points_to_win
          << " " << player_name_0 << " " << player_type_0 << " " << player_name_1 << " "
          << player_type_1 << " " << player_name_2 << " " << player_type_2 << " "
@@ -468,10 +473,8 @@ int main(int argc, char *argv[])
     players_in.push_back(Player_factory(player_name_1, player_type_1));
     players_in.push_back(Player_factory(player_name_2, player_type_2));
     players_in.push_back(Player_factory(player_name_3, player_type_3));
-
     Game *game = new Game(pack_in, shuffle_decision, points_to_win, players_in);
     game->play();
     delete game;
-
     return 0;
 }

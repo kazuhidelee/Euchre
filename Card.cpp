@@ -308,23 +308,20 @@ Suit Suit_next(Suit suit)
 //  order, as described in the spec.
 bool Card_less(const Card &a, const Card &b, Suit trump)
 {
+  // Check if both cards have the same trump suit.
   if (a.get_suit(trump) == trump && b.get_suit(trump) == trump)
   {
-    if (a.get_rank() == JACK && b.get_rank() != JACK)
+    if (a.get_rank() == JACK)
     {
+      if (b.get_rank() == JACK)
+      {
+        return a.is_left_bower(trump);
+      }
       return false;
     }
-    else if (b.get_rank() == JACK && a.get_rank() != JACK)
+    else if (b.get_rank() == JACK)
     {
       return true;
-    }
-    else if (a.get_rank() == JACK && b.get_rank() == JACK)
-    {
-      return a.is_left_bower(trump);
-    }
-    else
-    {
-      return a.get_rank() < b.get_rank();
     }
   }
   else if (a.is_trump(trump) && !b.is_trump(trump))
@@ -335,71 +332,40 @@ bool Card_less(const Card &a, const Card &b, Suit trump)
   {
     return true;
   }
-  else if (!a.is_trump(trump) && !b.is_trump(trump))
-  {
-    return a < b;
-  }
-  else
-  {
-    return false;
-  }
+
+  return a < b;
 }
 
 // EFFECTS Returns true if a is lower value than b.  Uses both the trump suit
 //   and the suit led to determine order, as described in the spec.
 bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump)
 {
-  // Trump suit > Led suit
   Suit led_suit = led_card.get_suit(trump);
-  if (a.get_suit(trump) == trump && b.get_suit(trump) == trump)
+  Suit suit_a = a.get_suit(trump);
+  Suit suit_b = b.get_suit(trump);
+
+  if (suit_a == trump && suit_b == trump)
   {
-    if (a.get_rank() == JACK && b.get_rank() != JACK)
+    if (a.get_rank() == JACK)
     {
+      if (b.get_rank() == JACK)
+        return a.is_left_bower(trump);
       return false;
     }
-    else if (b.get_rank() == JACK && a.get_rank() != JACK)
-    {
+    if (b.get_rank() == JACK)
       return true;
-    }
-    else if (a.get_rank() == JACK && b.get_rank() == JACK)
-    {
-      return a.is_left_bower(trump);
-    }
-    else
-    {
-      return a.get_rank() < b.get_rank();
-    }
   }
   else if (a.is_trump(trump) && !b.is_trump(trump))
-  {
     return false;
-  }
   else if (!a.is_trump(trump) && b.is_trump(trump))
-  {
-
     return true;
-  }
-  else if (!a.is_trump(trump) && !b.is_trump(trump))
-  {
-    if (a.get_suit() == led_suit && b.get_suit() == led_suit)
-    {
-      return a.get_rank() < b.get_rank();
-    }
-    else if (a.get_suit() == led_suit && b.get_suit() != led_suit)
-    {
-      return false;
-    }
-    else if (a.get_suit() != led_suit && b.get_suit() == led_suit)
-    {
-      return true;
-    }
-    else
-    {
-      return a < b;
-    }
-  }
-  else
-  {
+
+  if (suit_a == led_suit && suit_b == led_suit)
+    return a.get_rank() < b.get_rank();
+  if (suit_a == led_suit && suit_b != led_suit)
     return false;
-  }
+  if (suit_a != led_suit && suit_b == led_suit)
+    return true;
+
+  return a < b;
 }
