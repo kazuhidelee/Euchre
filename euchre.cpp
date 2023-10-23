@@ -428,29 +428,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // if points_to_win is not 1-100 inclusive, print error message
-    if (!(points_to_win >= 1 && points_to_win <= 100))
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
-
-    // if shuffle_decision is not present, print error message
-    if (shuffle_decision != "shuffle" && shuffle_decision != "noshuffle")
-    {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-             << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-             << "NAME4 TYPE4" << endl;
-        return 1;
-    }
-
-    // if player type is not simple or human, print error message
     if ((player_type_0 != "Simple" && player_type_0 != "Human") ||
-        (player_type_1 != "Simple" && player_type_1 != "Human") ||
-        (player_type_2 != "Simple" && player_type_2 != "Human") ||
-        (player_type_3 != "Simple" && player_type_3 != "Human"))
+    (player_type_1 != "Simple" && player_type_1 != "Human") ||
+    (player_type_2 != "Simple" && player_type_2 != "Human") ||
+    (player_type_3 != "Simple" && player_type_3 != "Human") || 
+    (shuffle_decision != "shuffle" && shuffle_decision != "noshuffle") ||
+    (!(points_to_win >= 1 && points_to_win <= 100)))
     {
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
              << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
