@@ -60,4 +60,23 @@ TEST(test_shuffle_and_empty)
     ASSERT_TRUE(pack.empty());
 }
 
+TEST(test_for_euchre)
+{
+    vector<Card> cards_played;
+    Suit trump = DIAMONDS;
+    Card led_card(TEN, DIAMONDS);
+    cards_played.push_back(Card(TEN, DIAMONDS));
+    cards_played.push_back(Card(JACK, SPADES));
+    cards_played.push_back(Card(KING, SPADES));
+    cards_played.push_back(Card(ACE, SPADES));
+    int max_index = 0;
+    for (int j = 0; j < cards_played.size(); ++j)
+    {
+        if (Card_less(cards_played[max_index], cards_played[j], led_card, trump))
+        {
+            max_index = j;
+        }
+    }
+    ASSERT_EQUAL(Card(TEN, DIAMONDS), cards_played[max_index]);
+}
 TEST_MAIN()

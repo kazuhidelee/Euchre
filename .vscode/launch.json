@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Debug",
 			"program": "${workspaceFolder}/euchre.exe",
-			"args": "pack.in noshuffle 3 Ivan Human Judea Human Kunle Human Liskov Human",
+			"args": "pack.in shuffle 10 Edsger Simple Fran Simple Gabriel Simple Herb Simple",
 			"cwd": "${workspaceFolder}"
 		}
 	]

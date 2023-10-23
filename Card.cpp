@@ -372,25 +372,12 @@ bool Card_less(const Card &a, const Card &b, const Card &led_card, Suit trump)
   }
   else if (a.is_trump(trump) && !b.is_trump(trump))
   {
-    if (b.get_rank() == JACK)
-    {
-      return !(a.get_rank() == JACK);
-    }
-    else
-    {
-      return false;
-    }
+    return false;
   }
   else if (!a.is_trump(trump) && b.is_trump(trump))
   {
-    if (a.get_rank() == JACK)
-    {
-      return b.get_rank() == JACK;
-    }
-    else
-    {
-      return true;
-    }
+
+    return true;
   }
   else if (!a.is_trump(trump) && !b.is_trump(trump))
   {
